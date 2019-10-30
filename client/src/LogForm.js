@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import './App.css';
-import App from "./App";
+import './css/LogForm.css';
 
 class LogForm extends Component {
 
@@ -35,17 +34,28 @@ class LogForm extends Component {
 
     render() {
         return (
+            <body>
+            <h2>CastleStore</h2>
             <form onSubmit={this.handleSubmit}>
-                <label>
-                    Username :
-                    <input value={this.state.name} onChange={this.handleChangeName}/>
-                    Password :
-                    <input value={this.state.password} onChange={this.handleChangePassword}/>
-                </label>
-                <input type="submit" value="Submit"/>
+                <div className="imgcontainer">
+                    <img src="css/castel.png" className="castle"/>
+                </div>
+                <div className="container">
+                    <label>
+                        Username :
+                        <input type="text" placeholder="Enter Username" value={this.state.name} onChange={this.handleChangeName}/>
+                        Password :
+                        <input type="password" placeholder="Enter Password" value={this.state.password}
+                               onChange={this.handleChangePassword}/>
+                    </label>
+                    <button type="submit">Login</button>
+                </div>
             </form>
+            </body>
 
-        );
+
+        )
+            ;
     }
 }
 
