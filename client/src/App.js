@@ -1,38 +1,27 @@
-import React,{Component} from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import Main from './Components/Main'
+import CreateApp from './Components/CreateApp';
+//Import all needed Component for this tutorial
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch,
+    Link,
+    Redirect
+} from "react-router-dom";
 
 class App extends Component {
-
-    constructor(props){
-        super(props);
-        this.state = {apiResponse: ""};
-    }
-
-    callAPI()
-    {
-        fetch("http://localhost:9000/startAPI")
-            .then(res => res.text())
-            .then(res => this.setState({apiResponse: res}));
-    }
-
-    componentWillMount()
-    {
-        this.callAPI();
-    }
-
     render() {
-
-        return(
-        <div className="App">
-            <header className="App-header">
-                <h3 className="App-title">Allo la terre je veux lancer lapp</h3>
-            </header>
-            <p className="App-intro">{this.state.apiResponse}</p>
-        </div>
-        )
+        return (
+            <Router>
+                <Switch>
+                <Route exact path="/" component={Main} />
+                <Route exact path="/create" component={CreateApp}/>
+                </Switch>
+            </Router>
+        );
     }
-
 }
 
 export default App;
