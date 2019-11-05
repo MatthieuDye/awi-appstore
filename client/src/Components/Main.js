@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import ModalForm from './Modal'
 import AppList from "./AppList";
+import * as env_variable from '../environment'
 
 class Main extends Component {
     state = {
@@ -10,7 +11,7 @@ class Main extends Component {
     }
 
     getItems(){
-        fetch('http://localhost:3000/app')
+        fetch(env_variable.APP_URL+'/app')
             .then(response => response.json())
             .then(items => {
                 if(items!==null) {
@@ -21,7 +22,7 @@ class Main extends Component {
     }
 
     getLabels(){
-        fetch('http://localhost:3000/label')
+        fetch(env_variable.APP_URL+'/label')
             .then(response => response.json())
             .then(items => this.setState({labels:items}))
             .catch(err => console.log(err))
@@ -63,7 +64,7 @@ class Main extends Component {
             <Container className="App">
                 <Row>
                     <Col>
-                        <h1 style={{margin: "20px 0"}}>CRUD Database</h1>
+                        <h1 style={{margin: "20px 0"}}>CastelStore</h1>
                     </Col>
                 </Row>
                 <Row>

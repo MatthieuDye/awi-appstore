@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import '../App.css'
-
+import * as env_variable from '../environment'
 class CreateApp extends Component {
 
     constructor(props){
@@ -40,14 +40,14 @@ class CreateApp extends Component {
     }
 
     getLabels(){
-        fetch('http://localhost:3000/label')
+        fetch(env_variable.APP_URL+'/label')
             .then(response => response.json())
             .then(items => this.setState({labels:items}))
             .catch(err => console.log(err))
     }
 
     getIdApp(){
-        fetch('http://localhost:3000/app/'+this.state.name_app)
+        fetch(env_variable.APP_URL+'/app/'+this.state.name_app)
             .then(response => response.json())
             .then(items => {
                 items.map(item => {
@@ -62,7 +62,7 @@ class CreateApp extends Component {
     createLabelApp() {
         this.state.labels_app.map(label => {
             if(label!=='choose label') {
-                fetch('http://localhost:3000/label_app', {
+                fetch(env_variable.APP_URL+'/label_app', {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ class CreateApp extends Component {
 
     submitFormAdd = e => {
         e.preventDefault();
-        fetch('http://localhost:3000/app', {
+        fetch(env_variable.APP_URL+'/app', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
