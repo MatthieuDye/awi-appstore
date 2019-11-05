@@ -1,0 +1,18 @@
+{
+  "name": "awi-appstore",
+  "version": "1.0.0",
+  "description": "a castelstore for a webcross platform",
+  "devDependencies": {
+    "concurrently": "^4.0.1"
+  },
+  "scripts": {
+    "client": "cd client && npm run dev",
+    "server": "cd api && nodemon app.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "install:all:prod": "concurrently --kill-others-on-fail \"cd server && npm install --production\" \" cd client && npm install --production\"",
+    "install:all:dev": "cd api && npm install && cd ../client && npm install",
+    "client:build": "cd client && npm run build:production"
+  },
+  "author": "",
+  "license": "ISC"
+}
