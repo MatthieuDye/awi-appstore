@@ -34,8 +34,10 @@ class CreateApp extends Component {
 
 
     addLabel(event){
-        this.setState({value_select_label:event.target.value})
-        this.setState({labels_app:[...this.state.labels_app,event.target.value]})
+        this.setState({value_select_label:event.target.value});
+        if(!this.state.labels_app.includes(event.target.value)) {
+            this.setState({labels_app: [...this.state.labels_app, event.target.value]})
+        }
     }
 
     deleteLabel(id_label){
