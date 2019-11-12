@@ -1,2 +1,2 @@
-export const APP_HOST_URL="http://castelstore.igpolytech.fr";
-export const APP_URL="http://localhost:3000";
+export const REACT_ENV='development';
+export const APP_URL = REACT_ENV === 'production'? "https://castelstore.igpolytech.fr":"http://localhost:5000"

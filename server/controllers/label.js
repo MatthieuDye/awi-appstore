@@ -3,6 +3,7 @@ const table_name = 'label';
 const getTableData = (req, res, db) => {
     db.select('*').from(table_name)
         .then(items => {
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
             if(items.length){
                 res.json(items)
             } else {

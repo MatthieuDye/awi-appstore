@@ -12,5 +12,5 @@
     "install:all:prod": "concurrently --kill-others-on-fail \"cd server && npm install --production\" \" cd client && npm install --production\"",
     "install:all:dev": "cd server && npm install && cd ../client && npm install",
     "client:build": "cd client && npm run build:production"
-  },
+  }
 }

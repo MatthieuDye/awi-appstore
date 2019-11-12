@@ -12,6 +12,31 @@ const getTableData = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error'}))
 }
 
+const getUserData = (req, res, db) => {
+    const {email,password} = req.body
+    db.select('id_user','name_user','mail_user')
+        .from(table_name)
+        .where({
+            mail_user: email,
+            password_user:  password
+        })
+        .then(items => {
+            if(items.length!==0){
+                const payload = {email};
+                const jwt = require('jsonwebtoken');
+                //Issue token
+                const token = jwt.sign(payload, process.env.SECRET_TOKEN, {
+                    expiresIn: '1h'
+                });
+                res.cookie('token', token, { httpOnly: true })
+                    .sendStatus(200);
+            }
+            else{
+                res.json({error:'incorrect mail or password'})
+            }
+        })
+}
+
 const postTableData = (req, res, db) => {
     const { id_user,name_user,mail_user } = req.body
     const added = new Date()
@@ -44,6 +69,7 @@ const deleteTableData = (req, res, db) => {
 
 module.exports = {
     getTableData,
+    getUserData,
     postTableData,
     putTableData,
     deleteTableData

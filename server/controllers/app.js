@@ -22,6 +22,7 @@ const getAppWithRank = (req, res, db) => {
         .join(table_rank,'app.id_app','=','rank.id_app')
         .groupBy('app.id_app','name_app','description_app','name_user')
         .then(items => {
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
             if(items.length){
                 res.json(items)
             } else {
