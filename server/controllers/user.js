@@ -9,7 +9,22 @@ const getTableData = (req, res, db) => {
                 res.json({dataExists: 'false'})
             }
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+}
+
+const getUserByMail = (req, res, db) => {
+    const {email} = req.email
+    db.select('*')
+        .from(table_name)
+        .where({mail_user:email})
+        .then(items => {
+            if (items.length === 1) {
+                res.json(items[0])
+            } else {
+                res.json({dataExists: 'false'})
+            }
+        })
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
 }
 
 const getUserData = (req, res, db) => {
@@ -68,6 +83,7 @@ const deleteTableData = (req, res, db) => {
 
 module.exports = {
     getTableData,
+    getUserByMail,
     getUserData,
     postTableData,
     putTableData,

@@ -17,9 +17,10 @@ const getTableData = (req, res, db) => {
 };
 
 const getAppWithRank = (req, res, db) => {
-    db.select('app.id_app','name_app','description_app','name_user',db.raw('avg(rank) as rank')).from(table_name)
+    db(table_name,table_rank)
         .join(table_user,'user.id_user','=','app.id_creator')
         .join(table_rank,'app.id_app','=','rank.id_app')
+        .select('app.id_app','name_app','description_app','name_user',db.raw('avg(rank) as rank'))
         .groupBy('app.id_app','name_app','description_app','name_user')
         .then(items => {
             res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
@@ -46,8 +47,8 @@ const getIdTableData = (req, res, db) => {
 };
 
 const postTableData = (req, res, db) => {
-    const {name_app, id_creator, description_app,link_app } = req.data;
-    console.log(req.data)
+    const {name_app, id_creator, description_app,link_app } = req.body;
+
     db(table_name).insert({name_app,id_creator,description_app,link_app})
         .returning('*')
         .then(item => {

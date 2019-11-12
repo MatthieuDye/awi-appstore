@@ -54,11 +54,14 @@ const user = require('./controllers/user');
 const label = require('./controllers/label');
 const appli = require('./controllers/app');
 const label_app = require('./controllers/label_app');
+const rank = require('./controllers/rank');
 const withAuth = require('./middleware');
 
 // App Routes - Auth
 
 app.post('/authenticate', (req,res) => user.getUserData(req,res,db));
+app.get('/idUser')
+
 app.get('/label', (req, res) => label.getTableData(req, res, db));
 app.post('/label', (req, res) => label.postTableData(req, res, db));
 app.put('/label', (req, res) => label.putTableData(req, res, db));
@@ -74,6 +77,8 @@ app.get('/label_app',withAuth, (req, res) => label_app.getTableData(req, res, db
 app.post('/label_app', withAuth,(req, res) => label_app.postTableData(req, res, db));
 app.put('/label_app', withAuth,(req, res) => label_app.putTableData(req, res, db));
 app.delete('/label_app', withAuth,(req, res) => label_app.deleteTableData(req, res, db));
+
+app.post('/rank',withAuth,(req,res) => rank.postTableData(req,res,db));
 
 app.get('/checkToken',withAuth, function(req, res) {
   res.sendStatus(200);
