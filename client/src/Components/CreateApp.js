@@ -11,7 +11,7 @@ class CreateApp extends Component {
         this.state = {
             id_app: 0,
             name_app: '',
-            id_creator: 1,
+            id_creator: 0,
             description_app: '',
             link_app:'',
             value_select_label: 'choose label',
@@ -23,8 +23,9 @@ class CreateApp extends Component {
         this.getIdApp=this.getIdApp.bind(this)
         this.createLabelApp=this.createLabelApp.bind(this)
         this.createRank=this.createRank.bind(this)
+        this.getIdUser=this.getIdUser.bind(this)
 
-
+        this.getIdUser()
     }
 
     onChange = e => {
@@ -39,6 +40,17 @@ class CreateApp extends Component {
 
     deleteLabel(id_label){
         this.setState({labels_app:this.state.labels_app.filter(id => id!==id_label)})
+    }
+
+    getIdUser(){
+        axios.get(env_variable.APP_URL+'/idUser/:mail',{
+            headers:{
+                Authorization:localStorage.getItem('token')
+            }
+        })
+            .then(response => response.data)
+            .then(item => this.setState({id_creator:item.id_user}))
+            .catch(err => console.log(err))
     }
 
     getLabels(){
@@ -159,7 +171,7 @@ class CreateApp extends Component {
 
         return (
             <Form id="createAppForm" onSubmit={this.props.item ? this.submitFormEdit : this.submitFormAdd}>
-                <FormGroup class="nameAppForm">
+                <FormGroup className="nameAppForm">
                     <Label for="name">App Name</Label><br/>
                     <Input type="text" name="name_app" id="name_app" onChange={this.onChange} value={this.state.name_app === null ? '' : this.state.name_app} />
                 </FormGroup>

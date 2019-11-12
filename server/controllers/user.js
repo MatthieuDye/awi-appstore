@@ -1,4 +1,6 @@
 const table_name = 'user';
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 const getTableData = (req, res, db) => {
     db.select('*').from(table_name)
@@ -13,10 +15,19 @@ const getTableData = (req, res, db) => {
 }
 
 const getUserByMail = (req, res, db) => {
-    const {email} = req.email
+    const {email} = req.params;
+    const token = req.headers.authorization
+    const email_decrypted = jwt.verify(token, process.env.SECRET_TOKEN, function(err, decoded) {
+        if (err) {
+            return res.status(401).send('Unauthorized: Invalid token');
+        } else {
+            return decoded.email;
+        }
+    });
+    console.log(email_decrypted);
     db.select('*')
         .from(table_name)
-        .where({mail_user:email})
+        .where({mail_user:email_decrypted})
         .then(items => {
             if (items.length === 1) {
                 res.json(items[0])

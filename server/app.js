@@ -60,7 +60,7 @@ const withAuth = require('./middleware');
 // App Routes - Auth
 
 app.post('/authenticate', (req,res) => user.getUserData(req,res,db));
-app.get('/idUser')
+app.get('/idUser/:mail',withAuth,(req,res) => user.getUserByMail(req,res,db));
 
 app.get('/label', (req, res) => label.getTableData(req, res, db));
 app.post('/label', (req, res) => label.postTableData(req, res, db));
