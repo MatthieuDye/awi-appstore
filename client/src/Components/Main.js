@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import ModalForm from './Modal'
 import AppList from "./AppList";
+import axios from "axios";
 import * as env_variable from '../environment'
 
 class Main extends Component {
@@ -11,9 +12,12 @@ class Main extends Component {
     }
 
     getItems(){
-        fetch(env_variable.APP_URL+'/app')
-            .then(response => response.json())
+        axios.get(env_variable.APP_URL+'/app',{
+            headers:{Authorization:localStorage.getItem('token')}
+        })
+            .then(response => response.data)
             .then(items => {
+                console.log(items)
                 if(items!==null) {
                     this.setState({items:items})
                 }
@@ -22,7 +26,9 @@ class Main extends Component {
     }
 
     getLabels(){
-        fetch(env_variable.APP_URL+'/label')
+        return axios.get(env_variable.APP_URL+'/label',{
+            headers:{Authorization:localStorage.getItem('token')}
+        })
             .then(response => response.json())
             .then(items => this.setState({labels:items}))
             .catch(err => console.log(err))

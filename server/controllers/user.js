@@ -21,15 +21,14 @@ const getUserData = (req, res, db) => {
             password_user:  password
         })
         .then(items => {
-            if(items.length!==0){
+            if(items.length===1){
                 const payload = {email};
                 const jwt = require('jsonwebtoken');
                 //Issue token
                 const token = jwt.sign(payload, process.env.SECRET_TOKEN, {
                     expiresIn: '1h'
                 });
-                res.cookie('token', token, { httpOnly: true })
-                    .sendStatus(200);
+                res.send(token);
             }
             else{
                 res.json({error:'incorrect mail or password'})

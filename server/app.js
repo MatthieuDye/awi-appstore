@@ -59,7 +59,6 @@ const withAuth = require('./middleware');
 // App Routes - Auth
 
 app.post('/authenticate', (req,res) => user.getUserData(req,res,db));
-
 app.get('/label', (req, res) => label.getTableData(req, res, db));
 app.post('/label', (req, res) => label.postTableData(req, res, db));
 app.put('/label', (req, res) => label.putTableData(req, res, db));

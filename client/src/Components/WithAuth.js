@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import {APP_URL} from "../environment";
+import axios from "axios"
 export default function withAuth(ComponentToProtect) {
     return class extends Component {
         constructor() {
@@ -11,7 +12,9 @@ export default function withAuth(ComponentToProtect) {
             };
         }
         componentDidMount() {
-            fetch(APP_URL+'/checkToken')
+            return axios.get(APP_URL+'/checkToken',{
+                headers:{Authorization:localStorage.getItem('token')}
+            })
                 .then(res => {
                     if (res.status === 200) {
                         this.setState({ loading: false });

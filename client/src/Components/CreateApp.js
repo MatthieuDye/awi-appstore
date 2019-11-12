@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import '../App.css'
 import * as env_variable from '../environment'
+import axios from 'axios'
 class CreateApp extends Component {
 
     constructor(props){
@@ -40,15 +41,19 @@ class CreateApp extends Component {
     }
 
     getLabels(){
-        fetch(env_variable.APP_URL+'/label')
-            .then(response => response.json())
+        axios.get(env_variable.APP_URL+'/label')
+            .then(response => response.data)
             .then(items => this.setState({labels:items}))
             .catch(err => console.log(err))
     }
 
     getIdApp(){
-        fetch(env_variable.APP_URL+'/app/'+this.state.name_app)
-            .then(response => response.json())
+        axios.get(env_variable.APP_URL+'/app/'+this.state.name_app,{
+            headers:{
+                Authorization:localStorage.getItem('token')
+            }
+        })
+            .then(response => response.data)
             .then(items => {
                 items.map(item => {
                     this.setState({id_app:item.id_app})
@@ -62,17 +67,16 @@ class CreateApp extends Component {
     createLabelApp() {
         this.state.labels_app.map(label => {
             if(label!=='choose label') {
-                fetch(env_variable.APP_URL+'/label_app', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+                axios.post(env_variable.APP_URL+'/label_app', JSON.stringify({
                         id_label: label,
                         id_app: this.state.id_app
-                    })
+                    }),
+                    {
+                        headers: {
+                            Authorization:localStorage.getItem('token')
+                        },
                 })
-                    .then(response => response.json())
+                    .then(response => response.data)
                     .then(item => {
                         if (Array.isArray(item)) {
                             this.props.addItemToState(item[0])
@@ -90,20 +94,18 @@ class CreateApp extends Component {
 
     submitFormAdd = e => {
         e.preventDefault();
-        fetch(env_variable.APP_URL+'/app', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        axios.post(env_variable.APP_URL+'/app', JSON.stringify({
                 name_app: this.state.name_app,
                 id_creator: this.state.id_creator,
                 description_app: this.state.description_app,
                 link_app: this.state.link_app
             })
+        , {
+            headers: {
+            Authorization: localStorage.getItem('token')
+        },
         })
-            .then(response => response.json()
-            )
+            .then(response => response.data)
             .then(() => this.getIdApp())
             .catch(err => console.log(err));
 

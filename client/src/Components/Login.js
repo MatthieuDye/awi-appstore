@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {APP_URL} from "../environment";
 import Cookies from 'universal-cookie';
+import axios from "axios";
 const cookies = new Cookies();
 
 export default class Login extends Component {
@@ -20,15 +21,14 @@ export default class Login extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        fetch(APP_URL+'/authenticate', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+
+        return axios.post(APP_URL+'/authenticate',{
+            email:this.state.email,
+            password:this.state.password
         })
             .then(res => {
                 if (res.status === 200) {
+                    localStorage.setItem('token',res.data);
                     this.props.history.push('/');
                 } else {
                     const err = new Error(res.error);

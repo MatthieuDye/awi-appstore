@@ -42,17 +42,18 @@ const getIdTableData = (req, res, db) => {
                 res.json(null)
             }
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
 const postTableData = (req, res, db) => {
-    const {name_app, id_creator, description_app,link_app } = req.body;
+    const {name_app, id_creator, description_app,link_app } = req.data;
+    console.log(req.data)
     db(table_name).insert({name_app,id_creator,description_app,link_app})
         .returning('*')
         .then(item => {
             res.json(item)
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
 const putTableData = (req, res, db) => {
