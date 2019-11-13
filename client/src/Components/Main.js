@@ -3,7 +3,8 @@ import { Container, Row, Col } from 'reactstrap'
 import ModalForm from './Modal'
 import AppList from "./AppList";
 import axios from "axios";
-import * as env_variable from '../environment'
+import {APP_URL} from "../environment";
+
 
 class Main extends Component {
     state = {
@@ -12,12 +13,11 @@ class Main extends Component {
     }
 
     getItems(){
-        axios.get(env_variable.APP_URL+'/app',{
+        axios.get(APP_URL+'/app',{
             headers:{Authorization:localStorage.getItem('token')}
         })
             .then(response => response.data)
             .then(items => {
-                console.log(items)
                 if(items!==null) {
                     this.setState({items:items})
                 }
@@ -26,7 +26,7 @@ class Main extends Component {
     }
 
     getLabels(){
-        return axios.get(env_variable.APP_URL+'/label',{
+        return axios.get(APP_URL+'/label',{
             headers:{Authorization:localStorage.getItem('token')}
         })
             .then(response => response.json())

@@ -9,7 +9,6 @@ const helmet = require('helmet'); // creates headers that protect from attacks (
 const bodyParser = require('body-parser'); // turns response into usable format
 const cors = require('cors');  // allows/disallows cross-site communication
 const morgan = require('morgan'); // logs requests
-const cookieParser = require('cookie-parser');
 
 // db Connection
 const db = process.env.NODE_ENV==='production'?
@@ -25,14 +24,13 @@ const db = process.env.NODE_ENV==='production'?
         password : 'dB604Tn',
         database : 'castelstore'
       }
-    })
+    });
 
 
 
 
 // App
 const app = express();
-app.use(cookieParser());
 // App Middleware
 const whitelist = process.env.NODE_EV==='production'?[process.env.APP_FRONT]:[process.env.APP_FRONT_LOCAL]
 const corsOptions = {
@@ -52,33 +50,23 @@ app.use(morgan('combined')); // use 'tiny' or 'combined'
 // Controllers - aka, the db queries
 const user = require('./controllers/user');
 const label = require('./controllers/label');
-const appli = require('./controllers/app');
+
 const label_app = require('./controllers/label_app');
 const rank = require('./controllers/rank');
 const withAuth = require('./middleware');
 
-// App Routes - Auth
+// App Routes
 
-app.post('/authenticate', (req,res) => user.getUserData(req,res,db));
-app.get('/idUser/:mail',withAuth,(req,res) => user.getUserByMail(req,res,db));
-
-app.get('/label', (req, res) => label.getTableData(req, res, db));
-app.post('/label', (req, res) => label.postTableData(req, res, db));
-app.put('/label', (req, res) => label.putTableData(req, res, db));
-app.delete('/label', (req, res) => label.deleteTableData(req, res, db));
-
-app.get('/app', withAuth,(req, res) => appli.getAppWithRank(req, res, db));
-app.post('/app',withAuth, (req, res) => appli.postTableData(req, res, db));
-app.put('/app',withAuth, (req, res) => appli.putTableData(req, res, db));
-app.delete('/app',withAuth, (req, res) => appli.deleteTableData(req, res, db));
-app.get('/app/:name_app',withAuth, (req, res) => appli.getIdTableData(req, res, db));
-
-app.get('/label_app',withAuth, (req, res) => label_app.getTableData(req, res, db));
-app.post('/label_app', withAuth,(req, res) => label_app.postTableData(req, res, db));
-app.put('/label_app', withAuth,(req, res) => label_app.putTableData(req, res, db));
-app.delete('/label_app', withAuth,(req, res) => label_app.deleteTableData(req, res, db));
-
-app.post('/rank',withAuth,(req,res) => rank.postTableData(req,res,db));
+const apps_routes = require('./routes/apps');
+const labels_routes = require('./routes/labels');
+const labels_app_routes = require('./routes/labels_app');
+const ranks_routes = require('./routes/ranks');
+const users_routes = require('./routes/users');
+app.use('/app',apps_routes);
+app.use('/label',labels_routes);
+app.use('/label_app',labels_app_routes);
+app.use('/rank',ranks_routes);
+app.use('/user',users_routes);
 
 app.get('/checkToken',withAuth, function(req, res) {
   res.sendStatus(200);

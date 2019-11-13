@@ -1,9 +1,8 @@
 const table_name = 'label';
 
-const getTableData = (req, res, db) => {
+const getLabels = (req, res, db) => {
     db.select('*').from(table_name)
         .then(items => {
-            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
             if(items.length){
                 res.json(items)
             } else {
@@ -13,9 +12,8 @@ const getTableData = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error'}))
 }
 
-const postTableData = (req, res, db) => {
-    const { name_label } = req.body
-    const added = new Date()
+const insertLabel = (req, res, db) => {
+    const { name_label } = req.body;
     db(table_name).insert({name_label})
         .returning('*')
         .then(item => {
@@ -24,7 +22,7 @@ const postTableData = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error'}))
 }
 
-const putTableData = (req, res, db) => {
+const updateLabel = (req, res, db) => {
     const { id_label,name_label } = req.body
     db(table_name).where({id_label}).update({name_label})
         .returning('*')
@@ -34,7 +32,7 @@ const putTableData = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error'}))
 }
 
-const deleteTableData = (req, res, db) => {
+const deleteLabel = (req, res, db) => {
     const { id_label } = req.body
     db(table_name).where({id_label}).del()
         .then(() => {
@@ -44,8 +42,8 @@ const deleteTableData = (req, res, db) => {
 }
 
 module.exports = {
-    getTableData,
-    postTableData,
-    putTableData,
-    deleteTableData
+    getLabels,
+    insertLabel,
+    updateLabel,
+    deleteLabel
 }

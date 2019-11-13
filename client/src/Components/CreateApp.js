@@ -1,9 +1,8 @@
-
 import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import '../App.css'
-import * as env_variable from '../environment'
 import axios from 'axios'
+import {APP_URL} from "../environment";
 class CreateApp extends Component {
 
     constructor(props){
@@ -45,7 +44,7 @@ class CreateApp extends Component {
     }
 
     getIdUser(){
-        axios.get(env_variable.APP_URL+'/idUser/:mail',{
+        axios.get(APP_URL+'/user/idUser/:mail',{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -56,14 +55,14 @@ class CreateApp extends Component {
     }
 
     getLabels(){
-        axios.get(env_variable.APP_URL+'/label')
+        axios.get(APP_URL+'/label')
             .then(response => response.data)
             .then(items => this.setState({labels:items}))
             .catch(err => console.log(err))
     }
 
     getIdApp(){
-        axios.get(env_variable.APP_URL+'/app/'+this.state.name_app,{
+        axios.get(APP_URL+'/app/'+this.state.name_app,{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -81,7 +80,7 @@ class CreateApp extends Component {
     }
 
     createRank(){
-        axios.post(env_variable.APP_URL+'/rank', {
+        axios.post(APP_URL+'/rank', {
             id_user: this.state.id_creator,
             id_app: this.state.id_app,
             rank: 2.5
@@ -91,14 +90,14 @@ class CreateApp extends Component {
                     Authorization: localStorage.getItem('token')
                 }
             })
-            .then(response => response.data)
+            .then(this.props.history.push('/'))
             .catch(err => console.log(err))
     }
 
     createLabelApp() {
         this.state.labels_app.map(label => {
             if(label!=='choose label') {
-                axios.post(env_variable.APP_URL+'/label_app', {
+                axios.post(APP_URL+'/label_app', {
                         id_label: label,
                         id_app: this.state.id_app
                     },
@@ -125,7 +124,7 @@ class CreateApp extends Component {
 
     submitFormAdd = e => {
         e.preventDefault();
-        axios.post(env_variable.APP_URL+'/app', {
+        axios.post(APP_URL+'/app', {
             name_app: this.state.name_app,
             id_creator: this.state.id_creator,
             description_app: this.state.description_app,

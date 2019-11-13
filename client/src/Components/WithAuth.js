@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import {APP_URL} from "../environment";
 import axios from "axios"
+import {APP_URL} from "../environment";
+
 export default function withAuth(ComponentToProtect) {
     return class extends Component {
         constructor() {

@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import castle from '../castle.jpg';
 import {Form, Col, Row, Container,Image} from 'react-bootstrap';
-import {APP_URL} from "../environment";
-import Cookies from 'universal-cookie';
 import axios from "axios";
-
-const cookies = new Cookies();
+import {APP_URL} from "../environment";
 
 export default class Login extends Component {
 
@@ -17,6 +14,7 @@ export default class Login extends Component {
         };
     }
 
+
     handleInputChange = (event) => {
         const {value, name} = event.target;
         this.setState({
@@ -26,8 +24,9 @@ export default class Login extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
+        console.log(URL)
 
-        return axios.post(APP_URL + '/authenticate', {
+        return axios.post(APP_URL+'/user/authenticate', {
             email: this.state.email,
             password: this.state.password
         })

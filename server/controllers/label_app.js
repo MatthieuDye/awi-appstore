@@ -1,7 +1,11 @@
 const table_name = 'label_app';
 
-const getTableData = (req, res, db) => {
-    db.select('*').from(table_name)
+//get labels from app with id in req.params
+const getLabelFromApp = (req, res, db) => {
+    const {id_app} = req.params;
+    db.select('label_app.id_label,label.name_label').from(table_name)
+        .where({id_app:id_app})
+        .join('app','app.id_app','=','label_app.id_app')
         .then(items => {
             if(items.length){
                 res.json(items)
@@ -10,40 +14,31 @@ const getTableData = (req, res, db) => {
             }
         })
         .catch(err => res.status(400).json({dbError: 'db error'}))
-}
+};
 
-const postTableData = (req, res, db) => {
-    const { id_label, id_app } = req.body
+//add a label to an app
+const insertLabelApp = (req, res, db) => {
+    const { id_label, id_app } = req.body;
     db(table_name).insert({id_label,id_app})
         .returning('*')
         .then(item => {
             res.json(item)
         })
         .catch(err => res.status(400).json({dbError: 'db error'+err}))
-}
+};
 
-const putTableData = (req, res, db) => {
-    const { id_label,name_label } = req.body
-    db(table_name).where({id_label}).update({name_label})
-        .returning('*')
-        .then(item => {
-            res.json(item)
-        })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
-}
-
-const deleteTableData = (req, res, db) => {
-    const { id_label } = req.body
-    db(table_name).where({id_label}).del()
+//delete a label from an app
+const deleteLabelApp = (req, res, db) => {
+    const { id_label,id_app } = req.body;
+    db(table_name).where({id_label:id_label,id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
-}
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+};
 
 module.exports = {
-    getTableData,
-    postTableData,
-    putTableData,
-    deleteTableData
+    getLabelFromApp,
+    insertLabelApp,
+    deleteLabelApp
 }

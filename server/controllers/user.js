@@ -2,7 +2,7 @@ const table_name = 'user';
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-const getTableData = (req, res, db) => {
+const getUsers = (req, res, db) => {
     db.select('*').from(table_name)
         .then(items => {
             if(items.length){
@@ -12,11 +12,10 @@ const getTableData = (req, res, db) => {
             }
         })
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
-}
+};
 
 const getUserByMail = (req, res, db) => {
-    const {email} = req.params;
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
     const email_decrypted = jwt.verify(token, process.env.SECRET_TOKEN, function(err, decoded) {
         if (err) {
             return res.status(401).send('Unauthorized: Invalid token');
@@ -24,7 +23,6 @@ const getUserByMail = (req, res, db) => {
             return decoded.email;
         }
     });
-    console.log(email_decrypted);
     db.select('*')
         .from(table_name)
         .where({mail_user:email_decrypted})
@@ -36,10 +34,10 @@ const getUserByMail = (req, res, db) => {
             }
         })
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
-}
+};
 
-const getUserData = (req, res, db) => {
-    const {email,password} = req.body
+const getUser = (req, res, db) => {
+    const {email,password} = req.body;
     db.select('id_user','name_user','mail_user')
         .from(table_name)
         .where({
@@ -60,43 +58,42 @@ const getUserData = (req, res, db) => {
                 res.json({error:'incorrect mail or password'})
             }
         })
-}
+};
 
-const postTableData = (req, res, db) => {
-    const { id_user,name_user,mail_user } = req.body
-    const added = new Date()
+const insertUser = (req, res, db) => {
+    const { id_user,name_user,mail_user } = req.body;
     db(table_name).insert({id_user,name_user,mail_user})
         .returning('*')
         .then(item => {
             res.json(item)
         })
         .catch(err => res.status(400).json({dbError: 'db error'}))
-}
+};
 
-const putTableData = (req, res, db) => {
-    const { id_label,name_label } = req.body
+const updateUser = (req, res, db) => {
+    const { id_label,name_label } = req.body;
     db(table_name).where({id_label}).update({name_label})
         .returning('*')
         .then(item => {
             res.json(item)
         })
         .catch(err => res.status(400).json({dbError: 'db error'}))
-}
+};
 
-const deleteTableData = (req, res, db) => {
-    const { id_label } = req.body
-    db(table_name).where({id_label}).del()
+const deleteUser = (req, res, db) => {
+    const { id_user } = req.body;
+    db(table_name).where({id_user}).del()
         .then(() => {
             res.json({delete: 'true'})
         })
         .catch(err => res.status(400).json({dbError: 'db error'}))
-}
+};
 
 module.exports = {
-    getTableData,
+    getUsers,
     getUserByMail,
-    getUserData,
-    postTableData,
-    putTableData,
-    deleteTableData
-}
+    getUser,
+    insertUser,
+    updateUser,
+    deleteUser
+};
