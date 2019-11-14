@@ -32,7 +32,7 @@ const db = process.env.NODE_ENV==='production'?
 // App
 const app = express();
 // App Middleware
-const whitelist = process.env.NODE_EV==='production'?[process.env.APP_FRONT]:[process.env.APP_FRONT_LOCAL]
+const whitelist = process.env.NODE_ENV==='production'?[process.env.APP_FRONT]:[process.env.APP_FRONT_LOCAL];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -47,13 +47,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan('combined')); // use 'tiny' or 'combined'
 
-// Controllers - aka, the db queries
-const user = require('./controllers/user');
-const label = require('./controllers/label');
-
-const label_app = require('./controllers/label_app');
-const rank = require('./controllers/rank');
-const withAuth = require('./middleware');
+const middleware = require('./middleware');
 
 // App Routes
 
@@ -68,7 +62,7 @@ app.use('/label_app',labels_app_routes);
 app.use('/rank',ranks_routes);
 app.use('/user',users_routes);
 
-app.get('/checkToken',withAuth, function(req, res) {
+app.get('/checkToken',middleware.withAuth, function(req, res) {
   res.sendStatus(200);
 });
 // App Server Connection

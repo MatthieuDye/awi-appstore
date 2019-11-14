@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import WithAuth from "./Components/WithAuth";
 import Login from "./Components/Login";
+import Profile from "./Components/Profile";
 
 class App extends Component {
     render() {
@@ -21,6 +22,7 @@ class App extends Component {
                 <Route exact path="/" component={WithAuth(Main)} />
                 <Route exact path="/create" component={WithAuth(CreateApp)}/>
                 <Route exact path="/login" component={Login} />
+                <Route exact path="/profile" component={WithAuth(Profile)} />
                 </Switch>
             </Router>
         );

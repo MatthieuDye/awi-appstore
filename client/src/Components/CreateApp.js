@@ -44,7 +44,7 @@ class CreateApp extends Component {
     }
 
     getIdUser(){
-        axios.get(APP_URL+'/user/idUser/:mail',{
+        axios.get(APP_URL+'/user',{
             headers:{
                 Authorization:localStorage.getItem('token')
             }

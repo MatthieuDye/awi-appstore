@@ -1,18 +1,13 @@
 import React, { Component } from 'react'
 import { Table } from 'reactstrap';
+import ModalForm from "./Modal";
 
 class AppList extends Component {
 
     render() {
 
         const items = this.props.items.map(item => {
-            return (
-                <tr key={item.id_app}>
-                    <th scope="row">{item.id_app}</th>
-                    <td>{item.name_app}</td>
-                    <td>{item.name_user}</td>
-                    <td>{item.rank}</td>
-                </tr>
+            return (<ModalForm key={item.id_app} buttonLabel="Edit" item={item} updateState={this.props.updateState}/>
             )
         })
 
@@ -20,7 +15,6 @@ class AppList extends Component {
             <Table responsive hover>
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Developed by</th>
                     <th>Rank</th>

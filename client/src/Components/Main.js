@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import ModalForm from './Modal'
 import AppList from "./AppList";
-import axios from "axios";
+import axios from 'axios';
 import {APP_URL} from "../environment";
 
 
@@ -42,7 +41,7 @@ class Main extends Component {
     }
 
     updateState = (item) => {
-        const itemIndex = this.state.items.findIndex(data => data.id === item.id)
+        const itemIndex = this.state.items.findIndex(data => data.id === item.id);
         const newArray = [
             // destructure all items from beginning to the indexed item
             ...this.state.items.slice(0, itemIndex),
@@ -75,12 +74,7 @@ class Main extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <AppList items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <ModalForm buttonLabel="Add Item" addItemToState={this.addItemToState}/>
+                        <AppList items={this.state.items} />
                     </Col>
                 </Row>
             </Container>
