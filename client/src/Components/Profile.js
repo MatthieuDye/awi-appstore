@@ -3,6 +3,7 @@ import {Col, Container, Row} from "reactstrap";
 import axios from "axios";
 import {APP_URL} from "../environment";
 import AppList from "./AppList";
+import {Link} from "react-router-dom";
 
 class Profile extends Component {
     constructor(props){
@@ -15,6 +16,7 @@ class Profile extends Component {
             apps_downloaded:[]
         }
         this.getUser()
+        this.componentDidMount()
     }
 
 
@@ -58,28 +60,43 @@ class Profile extends Component {
             .then(items => this.setState({apps_downloaded:items}))
             .catch(err => console.log(err))
     }
+    componentDidMount() {
+        this.getAppsDownloadedByUser()
+        this.getAppsCreatedByUser()
+        this.getUser()
+    }
 
     render() {
         return (
             <Container className="App">
                 <Row>
                     <Col>
+                        <Link to={'/'}><h5>Catalog</h5></Link>
+                    </Col>
+                    <Col>
                         <h1 style={{margin: "20px 0"}}>{this.state.name_user}</h1>
                     </Col>
-                </Row>
-                <Row>
-                    <h2>Applications you created</h2>
+                    <Col></Col>
                 </Row>
                 <Row>
                     <Col>
-                        <AppList items={this.state.apps_created} />
+                        <h2>Applications you created</h2>
                     </Col>
+                    <Col>
+                        <Link to={'/create'}><h5>Create an App</h5></Link>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <AppList items={this.state.apps_created} id_user={this.state.id_user} />
+                    </Col>
+
                 </Row>
                 <Row>
                     <h2>Applications on your Dashboard</h2>
                 </Row>
                     <Col>
-                        <AppList items={this.state.apps_downloaded}/>
+                        <AppList items={this.state.apps_downloaded} id_user={this.state.id_user}/>
                     </Col>
             </Container>
         )

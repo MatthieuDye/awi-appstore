@@ -1,5 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const db = require('./database').db;
+
 const withAuth = function(req, res, next) {
     const token = req.headers.authorization;
     if (!token) {
@@ -16,6 +18,22 @@ const withAuth = function(req, res, next) {
     }
 };
 
+const verifyId = function(req,res,next) {
+    db.select('*')
+        .from('user')
+        .where({mail_user:getEmail(req)})
+        .then(items => {
+            console.log(items[0].id_user.toString())
+            console.log(req.headers.id_user)
+            if (items[0].id_user.toString() === req.headers.id_user || req.body.id_user) {
+                next();
+            } else {
+                res.status(401).send('Unauthorized')
+            }
+        })
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+}
+
 function getEmail(req){
     const token = req.headers.authorization;
     return jwt.verify(token, process.env.SECRET_TOKEN, function(err, decoded) {
@@ -29,5 +47,6 @@ function getEmail(req){
 
 module.exports = {
     withAuth,
-    getEmail
+    getEmail,
+    verifyId,
 };

@@ -97,6 +97,7 @@ const deleteApp = (req, res, db) => {
 const deleteUserApp = (req, res, db) => {
     const id_user = req.headers.id_user;
     const id_app = req.headers.id_app;
+
     db('user_app').where({id_user:id_user,id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})
@@ -105,13 +106,14 @@ const deleteUserApp = (req, res, db) => {
 };
 
 const getAppsDownloadedByUser = (req,res,db) =>{
-    db.select('app.id_app','app.name_app','app.description_app','app.link_app','user.name_user',db.raw('avg(rank) as rank'))
+    db.select('app.id_app','app.name_app','app.description_app','app.link_app','creator.name_user',db.raw('avg(rank) as rank'))
         .from(table_name)
-        .join('user','app.id_creator','=','user.id_user')
+        .join('user AS creator','app.id_creator','=','creator.id_user')
         .join('user_app','app.id_app','=','user_app.id_app')
+        .join('user','user_app.id_user','=','user.id_user')
         .join(table_rank,'app.id_app','=','rank.id_app')
         .where({'user.mail_user':middleware.getEmail(req)})
-        .groupBy('app.id_app','app.name_app','app.description_app','app.link_app','user.name_user','user.name_user')
+        .groupBy('app.id_app','app.name_app','app.description_app','app.link_app','user.name_user','creator.name_user')
         .then(items => {
             if(items.length){
                 res.json(items)

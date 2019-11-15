@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import castle from '../castle.jpg';
-import {Form, Col, Row, Container,Image} from 'react-bootstrap';
+import {Form, Col, Row, Container} from 'react-bootstrap';
 import axios from "axios";
 import {APP_URL} from "../environment";
 

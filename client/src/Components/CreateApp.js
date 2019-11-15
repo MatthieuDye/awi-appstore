@@ -22,7 +22,6 @@ class CreateApp extends Component {
         this.getIdApp=this.getIdApp.bind(this)
         this.createLabelApp=this.createLabelApp.bind(this)
         this.createRank=this.createRank.bind(this)
-        this.getIdUser=this.getIdUser.bind(this)
 
         this.getIdUser()
     }
@@ -32,6 +31,7 @@ class CreateApp extends Component {
     };
 
 
+    //add the label selected in list of labels of the app (set labels_app state)
     addLabel(event){
         this.setState({value_select_label:event.target.value});
         if(!this.state.labels_app.includes(event.target.value)) {
@@ -39,10 +39,12 @@ class CreateApp extends Component {
         }
     }
 
+    //delete the label selected from list of labels of the app (set labels_app state)
     deleteLabel(id_label){
         this.setState({labels_app:this.state.labels_app.filter(id => id!==id_label)})
     }
 
+    //request to server to get id of user connected (set state id_creator)
     getIdUser(){
         axios.get(APP_URL+'/user',{
             headers:{
@@ -54,6 +56,7 @@ class CreateApp extends Component {
             .catch(err => console.log(err))
     }
 
+    //request to server to get all labels (set state labels)
     getLabels(){
         axios.get(APP_URL+'/label')
             .then(response => response.data)
@@ -61,6 +64,8 @@ class CreateApp extends Component {
             .catch(err => console.log(err))
     }
 
+    //after the creation of the app, request the server to get its id
+    //after the request, create the link with labels and create rank
     getIdApp(){
         axios.get(APP_URL+'/app/'+this.state.name_app,{
             headers:{
@@ -79,8 +84,10 @@ class CreateApp extends Component {
             .catch(err => console.log(err))
     }
 
+    //after getting id app, create a rank
+    //after request, app creation is over, push to profile page
     createRank(){
-        axios.post(APP_URL+'/rank', {
+        axios.post(APP_URL+'/user/app/rank', {
             id_user: this.state.id_creator,
             id_app: this.state.id_app,
             rank: 2.5
@@ -90,14 +97,15 @@ class CreateApp extends Component {
                     Authorization: localStorage.getItem('token')
                 }
             })
-            .then(this.props.history.push('/'))
+            .then(this.props.history.push('/profile'))
             .catch(err => console.log(err))
     }
 
+    //after getting id app,create link between labels and app
     createLabelApp() {
         this.state.labels_app.map(label => {
             if(label!=='choose label') {
-                axios.post(APP_URL+'/label_app', {
+                axios.post(APP_URL+'/app/labels', {
                         id_label: label,
                         id_app: this.state.id_app
                     },
@@ -121,7 +129,7 @@ class CreateApp extends Component {
         });
 }
 
-
+    //submit the form of app creation, send a post request to server with data
     submitFormAdd = e => {
         e.preventDefault();
         axios.post(APP_URL+'/app', {

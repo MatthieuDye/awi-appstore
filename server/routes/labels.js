@@ -5,8 +5,5 @@ const label = require('../controllers/label');
 const db = require('../database').db;
 
 router.get('/', (req, res) => label.getLabels(req, res, db));
-router.post('/',middleware.withAuth, (req, res) => label.insertLabel(req, res, db));
-router.put('/',middleware.withAuth, (req, res) => label.updateLabel(req, res, db));
-router.delete('/',middleware.withAuth,(req, res) => label.deleteLabel(req, res, db));
 
 module.exports = router;

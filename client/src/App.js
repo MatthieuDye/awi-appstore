@@ -6,9 +6,7 @@ import CreateApp from './Components/CreateApp';
 import {
     BrowserRouter as Router,
     Route,
-    Switch,
-    Link,
-    Redirect
+    Switch
 } from "react-router-dom";
 import WithAuth from "./Components/WithAuth";
 import Login from "./Components/Login";

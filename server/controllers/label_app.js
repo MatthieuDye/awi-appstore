@@ -1,19 +1,21 @@
 const table_name = 'label_app';
 
-//get labels from app with id in req.params
+//get labels.js from app with id in req.params
 const getLabelFromApp = (req, res, db) => {
-    const {id_app} = req.params;
-    db.select('label_app.id_label,label.name_label').from(table_name)
-        .where({id_app:id_app})
+    const id_app = req.params.id_app;
+    console.log('id '+id_app);
+    db.select('label_app.id_label','label.name_label').from(table_name)
+        .where('app.id_app',id_app)
+        .join('label','label.id_label','=','label_app.id_label')
         .join('app','app.id_app','=','label_app.id_app')
         .then(items => {
             if(items.length){
                 res.json(items)
             } else {
-                res.json({dataExists: 'false'})
+                res.json(null)
             }
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}))
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
 //add a label to an app
