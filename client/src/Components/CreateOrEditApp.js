@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import '../App.css'
 import axios from 'axios'
 import {APP_URL} from "../environment";
-class CreateApp extends Component {
+class CreateOrEditApp extends Component {
 
     constructor(props){
         super(props)
@@ -11,19 +11,24 @@ class CreateApp extends Component {
             id_app: 0,
             name_app: '',
             id_creator: 0,
+            name_creator:'',
             description_app: '',
             link_app:'',
             value_select_label: 'choose label',
             labels: [],
-            labels_app: []
+            labels_app: this.props.oldLabels?this.props.oldLabels.map(el => el.id_label):[]
+
         }
         this.deleteLabel=this.deleteLabel.bind(this)
         this.addLabel=this.addLabel.bind(this)
         this.getIdApp=this.getIdApp.bind(this)
         this.createLabelApp=this.createLabelApp.bind(this)
         this.createRank=this.createRank.bind(this)
+        this.deleteLabelApp=this.deleteLabelApp.bind(this)
 
         this.getIdUser()
+        this.getLabels()
+
     }
 
     onChange = e => {
@@ -52,7 +57,7 @@ class CreateApp extends Component {
             }
         })
             .then(response => response.data)
-            .then(item => this.setState({id_creator:item.id_user}))
+            .then(item => this.setState({id_creator:item.id_user,name_creator:item.name_user}))
             .catch(err => console.log(err))
     }
 
@@ -97,28 +102,36 @@ class CreateApp extends Component {
                     Authorization: localStorage.getItem('token')
                 }
             })
-            .then(this.props.history.push('/profile'))
+            .then(this.props.addApp({
+                id_app:this.state.id_app,
+                name_app:this.state.name_app,
+                id_user:this.state.id_creator,
+                name_user:this.state.name_creator,
+                link_app:this.state.link_app,
+                description_app:this.state.description_app,
+                rank:2.5
+            }))
+            .then(this.props.handleClose)
             .catch(err => console.log(err))
     }
 
     //after getting id app,create link between labels and app
     createLabelApp() {
-        this.state.labels_app.map(label => {
-            if(label!=='choose label') {
-                axios.post(APP_URL+'/app/labels', {
+        this.state.labels_app.filter(el => !this.props.oldLabels.map(el => el.id_label).includes(el)).map(label => {
+            if (label !== 'choose label') {
+                axios.post(APP_URL + '/app/labels', {
                         id_label: label,
                         id_app: this.state.id_app
                     },
                     {
                         headers: {
-                            Authorization:localStorage.getItem('token')
+                            Authorization: localStorage.getItem('token')
                         },
-                })
+                    })
                     .then(response => response.data)
                     .then(item => {
                         if (Array.isArray(item)) {
                             this.props.addItemToState(item[0])
-                            this.props.toggle()
                         } else {
                             console.log('failure')
                         }
@@ -127,7 +140,21 @@ class CreateApp extends Component {
             }
             return ''
         });
-}
+    }
+
+    deleteLabelApp(){
+        this.props.oldLabels.filter(el => !this.state.labels_app.includes(el.id_label)).map(label => {
+            axios.delete(APP_URL+'/app/labels',{
+                headers:{
+                    Authorization:localStorage.getItem('token'),
+                    id_app: this.props.item.id_app,
+                    id_label: label.id_label
+                }
+            })
+                .then(response => response.data)
+                .catch(err => console.log(err))
+        })
+    }
 
     //submit the form of app creation, send a post request to server with data
     submitFormAdd = e => {
@@ -149,14 +176,37 @@ class CreateApp extends Component {
 
     };
 
+    submitFormEdit = e => {
+        console.log(this.props.editApp)
+        e.preventDefault();
+        axios.put(APP_URL+'/app', {
+                id_app:this.state.id_app,
+                name_app: this.state.name_app,
+                id_creator: this.state.id_creator,
+                description_app: this.state.description_app,
+                link_app: this.state.link_app
+            },
+            {
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                },
+            })
+            .then(response => response.data)
+            .then(() => this.createLabelApp())
+            .then(() => this.deleteLabelApp())
+            .then(this.props.handleClose)
+            .catch(err => console.log(err));
+
+    };
+
 
 
     componentDidMount(){
         // if item exists, populate the state with proper data
         this.getLabels()
         if(this.props.item){
-            const { id_app, name_app,id_creator,description_app,link_app,labels } = this.props.item
-            this.setState({ id_app, name_app,id_creator,description_app,link_app,labels })
+            const { id_app, name_app,id_creator,description_app,link_app } = this.props.item
+            this.setState({ id_app, name_app,id_creator,description_app,link_app })
         }
     }
 
@@ -172,14 +222,17 @@ class CreateApp extends Component {
         const labels_selected = this.state.labels_app.map(item => {
             return (
                 <tr key={item}>
-                    <td>{this.state.labels.filter(el => el.id_label.toString()===item).map(el => {return(el.name_label)})}</td>
+                    {console.log(this.state.labels_app)}
+                    <td>{this.state.labels.filter(el => el.id_label.toString()===item.toString()).map(el => {
+                        return(el.name_label)})}</td>
                     <td><button onClick={() => this.deleteLabel(item)}>delete</button></td>
                 </tr>
             )
         });
 
         return (
-            <Form id="createAppForm" onSubmit={this.props.item ? this.submitFormEdit : this.submitFormAdd}>
+            <Form id="createAppForm" onSubmit={
+                this.props.item!=null ? this.submitFormEdit : this.submitFormAdd}>
                 <FormGroup className="nameAppForm">
                     <Label for="name">App Name</Label><br/>
                     <Input type="text" name="name_app" id="name_app" onChange={this.onChange} value={this.state.name_app === null ? '' : this.state.name_app} />
@@ -207,10 +260,10 @@ class CreateApp extends Component {
                     {labels_selected}
                     </tbody>
                 </table>
-                <Button>Submit</Button>
+                <Button >Submit</Button>
             </Form>
         );
     }
 }
 
-export default CreateApp;
+export default CreateOrEditApp;

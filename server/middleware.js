@@ -23,8 +23,6 @@ const verifyId = function(req,res,next) {
         .from('user')
         .where({mail_user:getEmail(req)})
         .then(items => {
-            console.log(items[0].id_user.toString())
-            console.log(req.headers.id_user)
             if (items[0].id_user.toString() === req.headers.id_user || req.body.id_user) {
                 next();
             } else {

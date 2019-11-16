@@ -1,7 +1,8 @@
 const table_name = 'label_app';
+const db = require('../database').db;
 
 //get labels.js from app with id in req.params
-const getLabelFromApp = (req, res, db) => {
+const getLabelFromApp = (req, res) => {
     const id_app = req.params.id_app;
     console.log('id '+id_app);
     db.select('label_app.id_label','label.name_label').from(table_name)
@@ -19,7 +20,7 @@ const getLabelFromApp = (req, res, db) => {
 };
 
 //add a label to an app
-const insertLabelApp = (req, res, db) => {
+const insertLabelApp = (req, res) => {
     const { id_label, id_app } = req.body;
     db(table_name).insert({id_label,id_app})
         .returning('*')
@@ -30,8 +31,8 @@ const insertLabelApp = (req, res, db) => {
 };
 
 //delete a label from an app
-const deleteLabelApp = (req, res, db) => {
-    const { id_label,id_app } = req.body;
+const deleteLabelApp = (req, res) => {
+    const { id_app,id_label } = req.headers;
     db(table_name).where({id_label:id_label,id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})
@@ -39,8 +40,18 @@ const deleteLabelApp = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
+const deleteAllLabelAppWithApp = (req, res,next) => {
+    const id_app = req.headers.id_app;
+    db(table_name).where({id_app:id_app}).del()
+        .then(
+            next()
+        )
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+};
+
 module.exports = {
     getLabelFromApp,
     insertLabelApp,
-    deleteLabelApp
+    deleteLabelApp,
+    deleteAllLabelAppWithApp
 }

@@ -1,7 +1,8 @@
 const table_name = 'user';
 const middleware = require('../middleware');
+const db = require('../database').db;
 
-const getUsers = (req, res, db) => {
+const getUsers = (req, res) => {
     db.select('*').from(table_name)
         .then(items => {
             if(items.length){
@@ -13,7 +14,7 @@ const getUsers = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const getUserByMail = (req, res, db) => {
+const getUserByMail = (req, res) => {
     db.select('*')
         .from(table_name)
         .where({mail_user:middleware.getEmail(req)})
@@ -27,7 +28,7 @@ const getUserByMail = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const hasDownloadedApp = (req,res, db) =>{
+const hasDownloadedApp = (req,res) =>{
     const id_user = req.params.id_user;
     const id_app = req.params.id_app;
     db.select('*')
@@ -44,7 +45,7 @@ const hasDownloadedApp = (req,res, db) =>{
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const getUser = (req, res, db) => {
+const getUser = (req, res) => {
     const {email,password} = req.body;
     db.select('id_user','name_user','mail_user')
         .from(table_name)
@@ -69,7 +70,7 @@ const getUser = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const insertUser = (req, res, db) => {
+const insertUser = (req, res) => {
     const { id_user,name_user,mail_user } = req.body;
     db(table_name).insert({id_user,name_user,mail_user})
         .returning('*')
@@ -79,7 +80,7 @@ const insertUser = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const updateUser = (req, res, db) => {
+const updateUser = (req, res) => {
     const { name_user } = req.body;
     db(table_name).where({mail_user:middleware.getEmail(req)}).update({name_user:name_user})
         .returning('*')
@@ -89,7 +90,7 @@ const updateUser = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const deleteUser = (req, res, db) => {
+const deleteUser = (req, res) => {
     const { id_user } = req.body;
     db(table_name).where({id_user}).del()
         .then(() => {

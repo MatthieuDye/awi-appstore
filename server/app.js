@@ -53,13 +53,9 @@ const middleware = require('./middleware');
 
 const apps_routes = require('./routes/apps');
 const labels_routes = require('./routes/labels');
-const labels_app_routes = require('./routes/labels_app');
-const ranks_routes = require('./routes/ranks');
 const users_routes = require('./routes/users');
 app.use('/app',apps_routes);
 app.use('/label',labels_routes);
-app.use('/label_app',labels_app_routes);
-app.use('/rank',ranks_routes);
 app.use('/user',users_routes);
 
 app.get('/checkToken',middleware.withAuth, function(req, res) {
