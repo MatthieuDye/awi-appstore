@@ -150,7 +150,7 @@ class Profile extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <AppList items={this.state.apps_downloaded} id_user={this.state.id_user}/>
+                        <AppList items={this.state.apps_downloaded} id_user={this.state.id_user} deleteDownloadedApp={this.deleteDownloadedApp} addAppToDashBoard={this.addAppToDashBoard}/>
                     </Col>
                 </Row>
             </Container>

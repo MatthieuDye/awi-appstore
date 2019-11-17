@@ -2,7 +2,7 @@ const table_name = 'rank';
 const db = require('../database').db;
 
 const getNbRating = (req,res) => {
-    const id_app = req.headers;
+    const id_app = req.headers.id_app;
     db(table_name).select('id_app',db.raw('count(rank) as nb_rank')).where({id_app:id_app})
         .then(items => {
             if(items.length===1){
@@ -13,8 +13,9 @@ const getNbRating = (req,res) => {
 }
 
 const hasRank = (req,res) => {
-    const {id_user,id_app} = req.headers;
-    db(table_name).select('*').where({id_user:id_user,id_app:id_app})
+    const id_app = req.params.id_app;
+    const id_user = req.params.id_user;
+    db.select('*').from(table_name).where({id_user:id_user,id_app:id_app})
         .then(items => {
             if(items.length===1){
                 res.json({hasRank:true})
@@ -48,7 +49,7 @@ const updateRank = (req, res) => {
 }
 
 const deleteAllRankWithApp = (req, res,next) => {
-    const id_app = req.headers.id_app;
+    const id_app = req.params.id_app;
     db(table_name).where({
         id_app:  id_app
     }).del()
@@ -62,5 +63,6 @@ module.exports = {
     insertRank,
     updateRank,
     deleteAllRankWithApp,
-    hasRank
+    hasRank,
+    getNbRating
 }

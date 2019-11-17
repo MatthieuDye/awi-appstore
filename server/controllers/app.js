@@ -87,8 +87,8 @@ const updateApp = (req, res) => {
 };
 
 const deleteApp = (req, res) => {
-    const  id_app  = req.headers.id_app;
-    db(table_name).where({id_app}).del()
+    const id_app  = req.params.id_app;
+    db(table_name).where({id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})
         })
@@ -96,8 +96,8 @@ const deleteApp = (req, res) => {
 };
 
 const deleteUserApp = (req, res) => {
-    const id_user = req.headers.id_user;
-    const id_app = req.headers.id_app;
+    const id_user = req.params.id_user;
+    const id_app = req.params.id_app;
 
     db('user_app').where({id_user:id_user,id_app:id_app}).del()
         .then(() => {
@@ -107,7 +107,7 @@ const deleteUserApp = (req, res) => {
 };
 
 const deleteAllUserAppWithApp = (req,res,next) =>{
-    const id_app = req.headers.id_app;
+    const id_app = req.params.id_app;
 
     db('user_app').where({id_app:id_app}).del()
         .then(() => {

@@ -23,7 +23,7 @@ const verifyId = function(req,res,next) {
         .from('user')
         .where({mail_user:getEmail(req)})
         .then(items => {
-            if (items[0].id_user.toString() === req.headers.id_user || req.body.id_user) {
+            if (items[0].id_user.toString() === req.headers.id_user || req.body.id_user || req.params.id_user) {
                 next();
             } else {
                 res.status(401).send('Unauthorized')

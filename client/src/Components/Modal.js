@@ -18,18 +18,17 @@ class ModalForm extends Component {
             modalAppDetails: false,
             modalEditApp: false,
             added_app: false,
-            id_user:0,
             labels:[],
             rating:props.item.rank,
             nb_ratings:0
-        }
+        };
+
         this.addAppToDashBoard=this.addAppToDashBoard.bind(this);
         this.deleteAppFromDashBoard=this.deleteAppFromDashBoard.bind(this);
         this.deleteApp=this.deleteApp.bind(this);
         this.addRank=this.addRank.bind(this);
         this.editRank=this.editRank.bind(this);
         this.hasRank=this.hasRank.bind(this);
-        this.getUser();
         this.getLabels();
         this.getNbRating()
     }
@@ -55,7 +54,7 @@ class ModalForm extends Component {
     }
 
     hasDownloadedApp(){
-        axios.get(APP_URL+'/user/'+this.state.id_user+'/hasdownloadedapp/'+this.props.item.id_app,{
+        axios.get(APP_URL+'/user/'+this.props.id_user+'/hasdownloadedapp/'+this.props.item.id_app,{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
@@ -69,21 +68,6 @@ class ModalForm extends Component {
             .catch(err => console.log(err))
     }
 
-    getUser(){
-        axios.get(APP_URL+'/user',{
-            headers:{
-                Authorization:localStorage.getItem('token')
-            }
-        })
-            .then(response => response.data)
-            .then(item => this.setState(
-                {
-                    id_user:item.id_user
-                })
-            )
-            .then(() => this.hasDownloadedApp())
-            .catch(err => console.log(err))
-    }
 
     addAppToDashBoard(){
         axios.post(APP_URL+'/user/mydownloadedapps',{
@@ -109,11 +93,9 @@ class ModalForm extends Component {
     }
 
     deleteAppFromDashBoard(){
-        axios.delete(APP_URL+'/user/mydownloadedapps',{
+        axios.delete(APP_URL+'/user/'+this.props.id_user+'/mydownloadedapps/'+this.props.item.id_app,{
             headers:{
-                Authorization:localStorage.getItem('token'),
-                id_user: this.props.id_user,
-                id_app: this.props.item.id_app,
+                Authorization:localStorage.getItem('token')
             }
         },{
             headers:{
@@ -135,7 +117,7 @@ class ModalForm extends Component {
     }
 
     getNbRating(){
-        axios.get(APP_URL+'app/nbrank', {
+        axios.get(APP_URL+'/app/nbrank', {
             headers: {
                 Authorization: localStorage.getItem('token'),
                 id_app: this.props.item.id_app
@@ -148,11 +130,9 @@ class ModalForm extends Component {
     }
 
     hasRank(){
-        axios.get(APP_URL+'/user/app/rank',{
+        axios.get(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app+'/rank',{
             headers:{
-                Authorization:localStorage.getItem('token'),
-                id_user: this.props.id_user,
-                id_app: this.props.item.id_app
+                Authorization:localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -208,11 +188,9 @@ class ModalForm extends Component {
     }
 
     deleteApp(){
-        axios.delete(APP_URL+'/app',{
+        axios.delete(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app,{
             headers:{
-                Authorization:localStorage.getItem('token'),
-                id_user: this.props.id_user,
-                id_app: this.props.item.id_app
+                Authorization:localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -300,7 +278,7 @@ class ModalForm extends Component {
         };
 
         const deleteBtn = () =>{
-            if(this.props.item.id_user===this.props.id_user){
+            if(this.props.deleteApp){
                 return <Button onClick={this.deleteApp.bind(this)}>Del</Button>
             }
             else{
@@ -328,7 +306,7 @@ class ModalForm extends Component {
                             starCount={5}
                             starHoverColor='rgb(255,0,0)'
                             value={this.state.rating}
-                            editing={this.props.item.id_user!==this.state.id_user}
+                            editing={this.props.item.id_user!==this.props.id_user}
                             onStarClick={this.onStarClick.bind(this)}
                             renderStarIcon= {(index, value) => {
                                 return (
