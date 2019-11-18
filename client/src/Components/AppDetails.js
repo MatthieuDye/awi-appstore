@@ -11,7 +11,7 @@ import LabelList from "./LabelList";
 import StarRatingComponent from 'react-star-rating-component';
 import CreateOrEditApp from "./CreateOrEditApp";
 
-class ModalForm extends Component {
+class AppDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,8 +19,7 @@ class ModalForm extends Component {
             modalEditApp: false,
             added_app: false,
             labels:[],
-            rating:props.item.rank,
-            nb_ratings:0
+            rating:props.item.rank
         };
 
         this.addAppToDashBoard=this.addAppToDashBoard.bind(this);
@@ -30,9 +29,11 @@ class ModalForm extends Component {
         this.editRank=this.editRank.bind(this);
         this.hasRank=this.hasRank.bind(this);
         this.getLabels();
-        this.getNbRating()
+        this.hasAppOnDashBoard();
+        console.log(this.props.item)
     }
 
+    //send a request to have labels of the app and set labels state with them
     getLabels(){
         axios.get(APP_URL+'/app/'+this.props.item.id_app+'/labels',{
             headers:{
@@ -53,7 +54,8 @@ class ModalForm extends Component {
 
     }
 
-    hasDownloadedApp(){
+    //send a request to know if the app has been added on the dashBoard and set the added_app state with this boolean
+    hasAppOnDashBoard(){
         axios.get(APP_URL+'/user/'+this.props.id_user+'/hasdownloadedapp/'+this.props.item.id_app,{
             headers:{
                 Authorization:localStorage.getItem('token')
@@ -69,6 +71,7 @@ class ModalForm extends Component {
     }
 
 
+    //send a request to add the app on user dashBoard and set added_app state to true
     addAppToDashBoard(){
         axios.post(APP_URL+'/user/mydownloadedapps',{
             id_user: this.props.id_user,
@@ -79,11 +82,13 @@ class ModalForm extends Component {
             }
         })
             .then(response => response.data)
+            //the app is added to dashBoard
             .then(() => this.setState(
                 {
                     added_app:true
                 })
             )
+            //trigger addAppToDashBoard function of parent component (AppList) to add the app on the list of Component
             .then(() =>{
                 if(this.props.addAppToDashBoard){
                     this.props.addAppToDashBoard(this.props.item)
@@ -92,6 +97,7 @@ class ModalForm extends Component {
             .catch(err => console.log(err))
     }
 
+    //send a request to delete app from dashBoard
     deleteAppFromDashBoard(){
         axios.delete(APP_URL+'/user/'+this.props.id_user+'/mydownloadedapps/'+this.props.item.id_app,{
             headers:{
@@ -108,25 +114,13 @@ class ModalForm extends Component {
                     added_app:false
                 })
             )
+            //trigger deleteAppFromDashBoard function of parent component (AppList) to delete the app from the list of Componen
             .then(() => {
-                if(this.props.deleteDownloadedApp){
-                    this.props.deleteDownloadedApp(this.props.item.id_app)
+                if(this.props.deleteAppFromDashBoard){
+                    this.props.deleteAppFromDashBoard(this.props.item.id_app)
                 }
             })
             .catch(err => console.log(err))
-    }
-
-    getNbRating(){
-        axios.get(APP_URL+'/app/nbrank', {
-            headers: {
-                Authorization: localStorage.getItem('token'),
-                id_app: this.props.item.id_app
-            }
-        })
-            .then(response => response.data)
-            .then(res => this.setState({nb_ratings:res.nb_ratings}))
-            .catch(err => err)
-
     }
 
     hasRank(){
@@ -144,7 +138,7 @@ class ModalForm extends Component {
                     this.addRank()
                 }
                 })
-            .then(() => this.hasDownloadedApp())
+            .then(() => this.hasAppOnDashBoard())
             .catch(err => console.log(err))
     }
 
@@ -158,13 +152,7 @@ class ModalForm extends Component {
                 Authorization:localStorage.getItem('token')
             }
         })
-            .then(() => {
-                const nb_ratings = this.state.nb_ratings;
-                const new_rating = this.state.rating;
-                const actual_rating = this.props.item.rank;
-                this.setState({rating:(actual_rating*nb_ratings+new_rating)/(nb_ratings+1)})
-            })
-
+            .then(()=>this.setState({rating:this.props.rank}))
             .catch(err => console.log(err))
     }
 
@@ -178,12 +166,7 @@ class ModalForm extends Component {
                 Authorization:localStorage.getItem('token')
             }
         })
-            .then(() => {
-                const nb_ratings = this.state.nb_ratings;
-                const new_rating = this.state.rating;
-                const actual_rating = this.props.item.rank;
-                this.setState({rating:(actual_rating*(nb_ratings-1)+new_rating)/nb_ratings})
-            })
+            .then(()=>this.setState({rating:this.props.rank}))
             .catch(err => console.log(err))
     }
 
@@ -237,7 +220,7 @@ class ModalForm extends Component {
 
         const editBtn = () =>{
             if(this.props.deleteApp) {
-                return <Button onClick={this.toggleModalEditApp}>Edit App</Button>
+                return <Button className="editAppBtn" onClick={this.toggleModalEditApp}>Edit App</Button>
             }
            else{
                return ''
@@ -261,10 +244,10 @@ class ModalForm extends Component {
 
         const addBtn =  () => {
             if(this.state.added_app){
-                return <Button className="delete" onClick={this.deleteAppFromDashBoard}>Remove from my Dashboard</Button>
+                return <Button className="delete" onClick={this.deleteAppFromDashBoard}>Remove from my DashBoard</Button>
             }
             else{
-                return <Button className="add" onClick={this.addAppToDashBoard}>Add to my Dashboard</Button>
+                return <Button className="add" onClick={this.addAppToDashBoard}>Add to my DashBoard</Button>
             }
         };
 
@@ -279,7 +262,7 @@ class ModalForm extends Component {
 
         const deleteBtn = () =>{
             if(this.props.deleteApp){
-                return <Button onClick={this.deleteApp.bind(this)}>Del</Button>
+                return <Button className="deleteApp" onClick={this.deleteApp.bind(this)}>Del</Button>
             }
             else{
                 return ''
@@ -297,16 +280,17 @@ class ModalForm extends Component {
 
         return (
                 <tr key={this.props.item.id_app}>
-                    <td onClick={this.toggleModalDetailsApp}>{this.props.item.name_app}</td>
-                    <td onClick={this.toggleModalDetailsApp}>{this.props.item.name_user}</td>
+                    <td onClick={this.toggleModalDetailsApp} className="name_app">{this.props.item.name_app}</td>
+                    <td onClick={this.toggleModalDetailsApp} className="name_creator">{this.props.item.name_user}</td>
                     <td><div style={{fontSize: 24}}>
                         <StarRatingComponent
+                            className="star_component"
                             id={this.props.item.id_app+this.props.item.name_app}
                             name="rank"
                             starCount={5}
                             starHoverColor='rgb(255,0,0)'
                             value={this.state.rating}
-                            editing={this.props.item.id_user!==this.props.id_user}
+                            editing={this.props.item.id_creator!==this.props.id_user}
                             onStarClick={this.onStarClick.bind(this)}
                             renderStarIcon= {(index, value) => {
                                 return (
@@ -345,4 +329,4 @@ class ModalForm extends Component {
     }
 }
 
-export default ModalForm
+export default AppDetails

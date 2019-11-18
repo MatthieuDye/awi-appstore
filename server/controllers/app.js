@@ -37,7 +37,7 @@ const getAppsFromUser = (req,res) => {
 
 const getAppsWithRank = (req, res) => {
 
-    db.select('app.id_app','name_app','description_app','name_user','link_app',db.raw('avg(rank) as rank'))
+    db.select('app.id_app','name_app','description_app','id_creator','name_user','link_app',db.raw('avg(rank) as rank'))
         .from(table_name)
         .join(table_user,'user.id_user','=','app.id_creator')
         .join(table_rank,'app.id_app','=','rank.id_app')

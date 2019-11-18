@@ -17,7 +17,7 @@ class LabelList extends Component {
                     <th>Labels</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody className='labelsList'>
                 {items}
                 </tbody>
             </Table>

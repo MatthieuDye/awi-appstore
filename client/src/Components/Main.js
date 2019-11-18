@@ -13,10 +13,11 @@ class Main extends Component {
             id_user: 0,
             items: []
         }
-        this.getUser()
-        this.getItems()
+        this.getUser();
+        this.getItems();
     }
 
+    //send a request to get the user connected
     getUser(){
         axios.get(APP_URL+'/user',{
             headers:{
@@ -24,6 +25,7 @@ class Main extends Component {
             }
         })
             .then(response => response.data)
+            //update id_user state with id_user retrieved by request
             .then(item => this.setState(
                 {
                     id_user:item.id_user
@@ -32,11 +34,13 @@ class Main extends Component {
             .catch(err => console.log(err))
     }
 
+    //send a request to get all apps
     getItems(){
         axios.get(APP_URL+'/app',{
             headers:{Authorization:localStorage.getItem('token')}
         })
             .then(response => response.data)
+            //update apps state with apps retrieved by request
             .then(items => {
                 if(items!==null) {
                     this.setState({items:items})
@@ -46,32 +50,8 @@ class Main extends Component {
     }
 
 
-    addItemToState = (item) => {
-        this.setState(prevState => ({
-            items: [...prevState.items, item]
-        }))
-    }
-
-    updateState = (item) => {
-        const itemIndex = this.state.items.findIndex(data => data.id === item.id);
-        const newArray = [
-            // destructure all items from beginning to the indexed item
-            ...this.state.items.slice(0, itemIndex),
-            // add the updated item to the array
-            item,
-            // add the rest of the items to the array from the index after the replaced item
-            ...this.state.items.slice(itemIndex + 1)
-        ]
-        this.setState({ items: newArray })
-    }
-
-    deleteItemFromState = (id) => {
-        const updatedItems = this.state.items.filter(item => item.id !== id)
-        this.setState({ items: updatedItems })
-    }
-
     componentDidMount(){
-        this.getItems()
+        this.getItems();
         this.getUser()
 
     }

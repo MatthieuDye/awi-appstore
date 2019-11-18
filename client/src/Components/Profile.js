@@ -15,7 +15,7 @@ class Profile extends Component {
             name_user: '',
             mail_user:'',
             apps_created:[],
-            apps_downloaded:[],
+            dashBoard_apps:[],
             modalCreateApp: false
         }
         this.toggleModalAddApp=this.toggleModalAddApp.bind(this);
@@ -23,12 +23,12 @@ class Profile extends Component {
         this.deleteApp=this.deleteApp.bind(this);
         this.editApp=this.editApp.bind(this);
         this.addAppToDashBoard=this.addAppToDashBoard.bind(this);
-        this.deleteDownloadedApp=this.deleteDownloadedApp.bind(this);
+        this.deleteAppFromDashBoard=this.deleteAppFromDashBoard.bind(this);
         this.getUser();
         this.componentDidMount();
     }
 
-
+    //send a request to get the user connected
     getUser(){
         axios.get(APP_URL+'/user',{
             headers:{
@@ -36,6 +36,7 @@ class Profile extends Component {
             }
         })
             .then(response => response.data)
+            //update user information states
             .then(item => this.setState(
                 {
                     id_user:item.id_user,
@@ -44,10 +45,11 @@ class Profile extends Component {
                 })
             )
             .then(() => this.getAppsCreatedByUser())
-            .then(() => this.getAppsDownloadedByUser())
+            .then(() => this.getAppsOnDashBoard())
             .catch(err => console.log(err))
     }
 
+    //send a request to have apps owned by user
     getAppsCreatedByUser(){
         axios.get(APP_URL+'/user/myapps',{
             headers:{
@@ -55,30 +57,36 @@ class Profile extends Component {
             }
         })
             .then(response => response.data)
+            //update apps created by user state 
             .then(items => this.setState({apps_created:items}))
             .catch(err => console.log(err))
     }
-
-    getAppsDownloadedByUser(){
+    
+    //send a request to have apps in dashBoard by user
+    getAppsOnDashBoard(){
         axios.get(APP_URL+'/user/mydownloadedapps',{
             headers:{
                 Authorization:localStorage.getItem('token')
             }
         })
             .then(response => response.data)
-            .then(items => this.setState({apps_downloaded:items}))
+            .then(items => this.setState({dashBoard_apps:items}))
             .catch(err => console.log(err))
     }
 
+    //add the app on dashBoard apps list by updating state
     addAppToDashBoard(app){
-        this.setState({apps_downloaded: [...this.state.apps_downloaded, app]})
+        this.setState({dashBoard_apps: [...this.state.dashBoard_apps, app]})
     }
 
+    //add the app on created apps list by updating state
     addApp(app){
         this.setState({apps_created: [...this.state.apps_created, app]})
     }
 
+    //edit app on created apps list by updtating state
     editApp(app){
+        //for each app created, if it is the app edited, replace it by app on param, else retrieve it the same app
         this.setState({apps_created: this.state.apps_created.map(item => {
             if(item.id_app===app.id_app){
                 return app
@@ -89,23 +97,27 @@ class Profile extends Component {
             })})
     }
 
+    //delete the app on dashBoard and created apps list by updating state
     deleteApp(id_app){
         this.setState({
             apps_created:this.state.apps_created.filter(item => item.id_app!==id_app),
-            apps_downloaded:this.state.apps_downloaded.filter(item => item.id_app!==id_app)})
+            dashBoard_apps:this.state.dashBoard_apps.filter(item => item.id_app!==id_app)})
     }
 
-    deleteDownloadedApp(id_app){
-        this.setState({apps_downloaded:this.state.apps_downloaded.filter(item => item.id_app!==id_app)})
+    //delete the app on dashBoard apps list by updating state
+    deleteAppFromDashBoard(id_app){
+        this.setState({dashBoard_apps:this.state.dashBoard_apps.filter(item => item.id_app!==id_app)})
     }
 
     componentDidMount() {
-        this.getAppsDownloadedByUser()
+        this.getAppsOnDashBoard()
         this.getAppsCreatedByUser()
         this.getUser()
     }
 
+    //to open and close the AddApp modal
     toggleModalAddApp = () => {
+        //when triggered, modalCreateApp state take the opposite value
         this.setState(prevState => ({
             modalCreateApp: !prevState.modalCreateApp
         }))
@@ -114,12 +126,11 @@ class Profile extends Component {
     render() {
         const closeBtn = <Button className="close" onClick={this.toggleModalAddApp}>&times;</Button>;
 
-
         return (
             <Container className="App">
                 <Row>
                     <Col>
-                        <Link to={'/'}><h5>Profile</h5></Link>
+                        <Link to={'/'}><h5>Catalog</h5></Link>
                     </Col>
                     <Col>
                         <h1 style={{margin: "20px 0"}}>{this.state.name_user}</h1>
@@ -142,15 +153,15 @@ class Profile extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <AppList items={this.state.apps_created} id_user={this.state.id_user} editApp={this.editApp} deleteDownloadedApp={this.deleteDownloadedApp} addAppToDashBoard={this.addAppToDashBoard} deleteApp={this.deleteApp} />
+                        <AppList items={this.state.apps_created} id_user={this.state.id_user} editApp={this.editApp} deleteAppFromDashBoard={this.deleteAppFromDashBoard} addAppToDashBoard={this.addAppToDashBoard} deleteApp={this.deleteApp} />
                     </Col>
                 </Row>
                 <Row>
-                    <h2>Applications on your Dashboard</h2>
+                    <h2>Applications on your DashBoard</h2>
                 </Row>
                 <Row>
                     <Col>
-                        <AppList items={this.state.apps_downloaded} id_user={this.state.id_user} deleteDownloadedApp={this.deleteDownloadedApp} addAppToDashBoard={this.addAppToDashBoard}/>
+                        <AppList items={this.state.dashBoard_apps} id_user={this.state.id_user} deleteAppFromDashBoard={this.deleteAppFromDashBoard} addAppToDashBoard={this.addAppToDashBoard}/>
                     </Col>
                 </Row>
             </Container>

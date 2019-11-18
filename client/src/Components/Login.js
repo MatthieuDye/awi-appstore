@@ -14,7 +14,7 @@ export default class Login extends Component {
         };
     }
 
-
+    //update state when a form input has changed
     handleInputChange = (event) => {
         const {value, name} = event.target;
         this.setState({
@@ -22,6 +22,7 @@ export default class Login extends Component {
         });
     };
 
+    //send authentication request on submit
     onSubmit = (event) => {
         event.preventDefault();
         console.log(URL)
@@ -31,6 +32,7 @@ export default class Login extends Component {
             password: this.state.password
         })
             .then(res => {
+                //if authentication OK, set token in localstorage and redirect to catalog
                 if (res.status === 200) {
                     localStorage.setItem('token', res.data);
                     this.props.history.push('/');

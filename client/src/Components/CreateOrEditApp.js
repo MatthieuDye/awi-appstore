@@ -16,6 +16,7 @@ class CreateOrEditApp extends Component {
             link_app:'',
             value_select_label: 'choose label',
             labels: [],
+            //
             labels_app: this.props.oldLabels?this.props.oldLabels.map(el => el.id_label):[]
 
         }
