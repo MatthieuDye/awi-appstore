@@ -226,7 +226,7 @@ class CreateOrEditApp extends Component {
                     {console.log(this.state.labels_app)}
                     <td>{this.state.labels.filter(el => el.id_label.toString()===item.toString()).map(el => {
                         return(el.name_label)})}</td>
-                    <td><button onClick={() => this.deleteLabel(item)}>delete</button></td>
+                    <td><Button onClick={() => this.deleteLabel(item)}>delete</Button></td>
                 </tr>
             )
         });

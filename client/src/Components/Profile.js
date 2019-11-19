@@ -130,6 +130,7 @@ class Profile extends Component {
 
     render() {
         const closeBtn = <Button className="close" onClick={this.toggleModalAddApp}>&times;</Button>;
+        const user_name = this.state.name_user.replace('.',' ');
 
         return (
             <Container className="App">
@@ -138,7 +139,7 @@ class Profile extends Component {
                         <Link to={'/'}><h5>Catalog</h5></Link>
                     </Col>
                     <Col>
-                        <h1 style={{margin: "20px 0"}}>{this.state.name_user}</h1>
+                        <h1 style={{margin: "20px 0"}}>{user_name}</h1>
                     </Col>
                     <Col></Col>
                 </Row>

@@ -14,17 +14,9 @@ const getAppsFromUser = (req,res) => {
         .join(table_user,'app.id_creator','=','user.id_user')
         .join(table_rating,'app.id_app','=','rating.id_app')
         //select only apps created by user with mail in req
-        .where({mail_user:req.mail_user})
+        .where({name_user:req.name_user})
         .groupBy('app.id_app','app.name_app','app.description_app','app.link_app','user.name_user','user.id_user')
-        .then(items => {
-        if(items.length){
-            //put in res apps created by user
-            res.json(items)
-        } else {
-            //put null in res if no apps
-            res.json(null)
-        }
-    })
+        .then(items => res.json(items))
         .catch(err => res.status(400).json({dbError: 'db error '+err }))
 };
 
@@ -41,11 +33,7 @@ const getApps = (req, res) => {
         .join(table_rating,'app.id_app','=','rating.id_app')
         .groupBy('app.id_app','name_app','description_app','name_user')
         .then(items => {
-            if(items.length){
-                res.json(items)
-            } else {
-                res.json(null)
-            }
+            res.json(items)
         })
         .catch(err => res.status(400).json({dbError: 'db error '+err }))
 };
@@ -119,13 +107,19 @@ const deleteApp = (req, res) => {
  * @param res
  */
 const deleteUserApp = (req, res) => {
-    const id_user = req.params.id_user;
+    const name_user = req.params.name_user || "";
+    const id_user = req.params.id_user || 0;
+    console.log(id_user)
     const id_app = req.params.id_app;
 
-    db('user_app').where({id_user:id_user,id_app:id_app}).del()
+    db.select('id_user').from(table_user).where({id_user:id_user}).orWhere({name_user:name_user})
+        .then(items =>
+    db('user_app').where({id_user:items[0].id_user,id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})
         })
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+        )
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
@@ -157,14 +151,10 @@ const getUserAppsOnDashBoard = (req,res) =>{
         .join('user_app','app.id_app','=','user_app.id_app')
         .join('user','user_app.id_user','=','user.id_user')
         .join(table_rating,'app.id_app','=','rating.id_app')
-        .where({'user.mail_user':req.mail_user})
+        .where({'user.name_user':req.name_user})
         .groupBy('app.id_app','app.name_app','app.description_app','app.link_app','user.name_user','creator.name_user')
         .then(items => {
-            if(items.length){
-                res.json(items)
-            } else {
-                res.json(null)
-            }
+            res.json(items)
         })
         .catch(err => res.status(400).json({dbError: 'db error '+err }))
 };

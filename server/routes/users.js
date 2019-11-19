@@ -7,9 +7,9 @@ const label_app = require('../controllers/label_app');
 const rating = require('../controllers/rating');
 
 //get user who called the route
-router.get('/',middleware.withAuth,(req,res) => user.getUserByMail(req,res));
+router.get('/',middleware.withAuth,(req,res) => user.getUserByName(req,res));
 //
-router.post('/authenticate', (req,res) => user.getUser(req,res));
+router.get('/authenticate', middleware.withAuth,(req,res) => user.authenticateUser(req,res));
 //get apps created by a user
 router.get('/myapps',middleware.withAuth,(req,res) => app.getAppsFromUser(req,res));
 //get apps added on dashboard by a user
@@ -28,6 +28,13 @@ router.put('/app/rating',middleware.withAuth,(req,res) => rating.updateRating(re
 router.get('/:id_user/app/:id_app/rating',middleware.withAuth,(req,res) => rating.hasRating(req,res));
 //delete an app, before doing that, delete in db data associated to this app
 router.delete('/:id_user/app/:id_app',middleware.withAuth,
+    middleware.verifyId,
+    app.deleteAllUserAppWithApp,
+    label_app.deleteAllLabelAppWithApp,
+    rating.deleteAllRatingWithApp,
+    (req, res) => app.deleteApp(req, res));
+//same task but with name_user instead of id_user in params
+router.delete('/:name_user/app/:id_app',middleware.withAuth,
     middleware.verifyId,
     app.deleteAllUserAppWithApp,
     label_app.deleteAllLabelAppWithApp,

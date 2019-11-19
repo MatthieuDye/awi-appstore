@@ -20,9 +20,7 @@ const withAuth = function(req, res, next) {
                 if (err) {
                     res.status(401).send('Unauthorized: Invalid token');
                 } else {
-                    req.id_user = decoded.id_user;
-                    req.name_user = decoded.name_user;
-                    req.mail_user = decoded.mail_user;
+                    req.name_user = decoded.firstname+"."+decoded.lastname;
                     next();
                 }
             });
@@ -37,7 +35,7 @@ const withAuth = function(req, res, next) {
 const verifyId = function(req,res,next) {
     db.select('*')
         .from('user')
-        .where({mail_user:req.mail_user})
+        .where({name_user:req.name_user})
         .then(items => {
             if (items[0].id_user.toString() === req.headers.id_user || req.body.id_user || req.params.id_user) {
                 next();

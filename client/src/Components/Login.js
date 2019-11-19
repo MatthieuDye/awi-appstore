@@ -1,53 +1,55 @@
 import React, {Component} from 'react';
 import castle from '../castle.jpg';
-import {Form, Col, Row, Container} from 'react-bootstrap';
+import {Col, Row, Container, Button} from 'react-bootstrap';
 import axios from "axios";
-import {APP_URL} from "../environment";
+import {APP_FRONT_URL, APP_URL} from "../environment";
 
 export default class Login extends Component {
 
-    constructor(props) {
+    constructor(props){
         super(props);
-        this.state = {
-            email: '',
-            password: ''
-        };
+        this.redirectToProfile=this.redirectToProfile.bind(this)
     }
 
-    //update state when a form input has changed
-    handleInputChange = (event) => {
-        const {value, name} = event.target;
-        this.setState({
-            [name]: value
-        });
+    authPolytech = () => {
+        let state = Math.random().toString(36).substring(7);
+        localStorage.setItem("state", state);
+        const clientId = "566e7eb0-0081-4171-9cef-de9e92e84901";
+        const redirectUri = encodeURI(APP_FRONT_URL+'/login');
+        return `http://oauth.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
     };
 
-    //send authentication request on submit
-    onSubmit = (event) => {
-        event.preventDefault();
-        console.log(URL)
-
-        return axios.post(APP_URL+'/user/authenticate', {
-            mail_user: this.state.email,
-            password_user: this.state.password
+    authenticate(){
+        axios.get(APP_URL+'/user/authenticate',{
+            headers:{
+                Authorization:'Bearer '+localStorage.getItem('token')
+            }
         })
-            .then(res => {
-                //if authentication OK, set token in localstorage and redirect to catalog
-                if (res.status === 200) {
-                    localStorage.setItem('token', res.data);
-                    this.props.history.push('/');
-                } else {
-                    const err = new Error(res.error);
-                    throw err;
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Error logging in please try again');
+            .catch(err => err)
+    }
+
+    componentDidMount() {
+        if (this.props.location.search) {
+            const params = {};
+            window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+                params[key] = value;
             });
+            //callback of polytech auth
+            if(params.state !== undefined && (params.state.localeCompare(localStorage.getItem("state")))) {
+                const data = {client_id: "566e7eb0-0081-4171-9cef-de9e92e84901", code: params.code};
+                axios
+                    .post("https://oauth.igpolytech.fr/token", data)
+                    .then(res =>localStorage.setItem('token',res.data.access_token))
+                    .then(() => this.authenticate())
+                    .then(() => this.props.history.push('/profile'))
+                    .catch(err => err)
+            }
+        }
     }
 
     render() {
+
+
         return (
             <Container>
                 <Row>
@@ -55,42 +57,7 @@ export default class Login extends Component {
                         <img src={castle} alt="castle" height="400px" />
                     </Col>
                     <Col md={{span: 9, offset: 5}}>
-                        <h4>Please Login</h4>
-                        <br></br>
-                    </Col>
-                    <Col md={{span: 8, offset: 4}}>
-                        <Form onSubmit={this.onSubmit}>
-
-                            <Form.Group controlId="formBasicEmail">
-                                <Form.Label>Email address</Form.Label>
-                                <br></br>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    placeholder="Enter email"
-                                    value={this.state.email}
-                                    onChange={this.handleInputChange}
-                                    required
-                                />
-                                <Form.Text className="text-muted">
-                                    We'll never share your email with anyone else.
-                                </Form.Text>
-                            </Form.Group>
-
-                            <Form.Group controlId="formBasicPassword">
-                                <Form.Label>Password</Form.Label>
-                                <br></br>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    placeholder="Enter password"
-                                    value={this.state.password}
-                                    onChange={this.handleInputChange}
-                                    required
-                                />
-                            </Form.Group>
-                            <input type="submit" value="Submit"/>
-                        </Form>
+                        <a href={this.authPolytech()}><Button>Please Login</Button></a>
                     </Col>
                 </Row>
 
