@@ -2,6 +2,19 @@ const table_name = 'user';
 const middleware = require('../middleware');
 const db = require('../database').db;
 
+const authenticateUser =(req,res) => {
+    const authorization = req.headers.authorization;
+    const token = authorization.slice(7,authorization.length);
+    db.select('id_user').from('user').where({id_user:req.id_user})
+        .then(items => {
+            if(items.length===0){
+                insertUser(req,res);
+            }
+            res.send(token);
+        })
+        .catch(err => res.status(400).json({dbError: 'db error '+err}))
+};
+
 const getUsers = (req, res) => {
     db.select('*').from(table_name)
         .then(items => {
@@ -17,7 +30,7 @@ const getUsers = (req, res) => {
 const getUserByMail = (req, res) => {
     db.select('*')
         .from(table_name)
-        .where({mail_user:middleware.getEmail(req)})
+        .where({mail_user:req.mail_user})
         .then(items => {
             if (items.length === 1) {
                 res.json(items[0])
@@ -28,7 +41,7 @@ const getUserByMail = (req, res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const hasDownloadedApp = (req,res) =>{
+const hasAppOnDashBoard = (req,res) =>{
     const id_user = req.params.id_user;
     const id_app = req.params.id_app;
     db.select('*')
@@ -46,16 +59,18 @@ const hasDownloadedApp = (req,res) =>{
 };
 
 const getUser = (req, res) => {
-    const {email,password} = req.body;
+    const {mail_user,password_user} = req.body;
     db.select('id_user','name_user','mail_user')
         .from(table_name)
         .where({
-            mail_user: email,
-            password_user:  password
+            mail_user: mail_user,
+            password_user:  password_user
         })
         .then(items => {
             if(items.length===1){
-                const payload = {email};
+                const id_user = items[0].id_user;
+                const name_user = items[0].name_user;
+                const payload = {id_user,name_user,mail_user};
                 const jwt = require('jsonwebtoken');
                 //Issue token
                 const token = jwt.sign(payload, process.env.SECRET_TOKEN, {
@@ -71,7 +86,9 @@ const getUser = (req, res) => {
 };
 
 const insertUser = (req, res) => {
-    const { id_user,name_user,mail_user } = req.body;
+    const id_user = req.id_user;
+    const name_user = req.name_user;
+    const mail_user = req.mail_user;
     db(table_name).insert({id_user,name_user,mail_user})
         .returning('*')
         .then(item => {
@@ -100,11 +117,12 @@ const deleteUser = (req, res) => {
 };
 
 module.exports = {
+    authenticateUser,
     getUsers,
     getUserByMail,
     getUser,
     insertUser,
     updateUser,
     deleteUser,
-    hasDownloadedApp
+    hasAppOnDashBoard
 };

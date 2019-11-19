@@ -21,7 +21,7 @@ class Main extends Component {
     getUser(){
         axios.get(APP_URL+'/user',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -37,7 +37,7 @@ class Main extends Component {
     //send a request to get all apps
     getItems(){
         axios.get(APP_URL+'/app',{
-            headers:{Authorization:localStorage.getItem('token')}
+            headers:{Authorization:'Bearer '+localStorage.getItem('token')}
         })
             .then(response => response.data)
             //update apps state with apps retrieved by request

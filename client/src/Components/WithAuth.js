@@ -14,7 +14,7 @@ export default function withAuth(ComponentToProtect) {
         }
         componentDidMount() {
             return axios.get(APP_URL+'/checkToken',{
-                headers:{Authorization:localStorage.getItem('token')}
+                headers:{Authorization:'Bearer '+localStorage.getItem('token')}
             })
                 .then(res => {
                     if (res.status === 200) {

@@ -8,6 +8,7 @@ class AddEditForm extends React.Component {
         name_label: ''
     }
 
+
     onChange = e => {
         this.setState({[e.target.name]: e.target.value})
     }

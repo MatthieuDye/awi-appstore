@@ -29,10 +29,14 @@ class Profile extends Component {
     }
 
     //send a request to get the user connected
+
+    /**
+     *
+     */
     getUser(){
         axios.get(APP_URL+'/user',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -53,7 +57,7 @@ class Profile extends Component {
     getAppsCreatedByUser(){
         axios.get(APP_URL+'/user/myapps',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -64,9 +68,9 @@ class Profile extends Component {
     
     //send a request to have apps in dashBoard by user
     getAppsOnDashBoard(){
-        axios.get(APP_URL+'/user/mydownloadedapps',{
+        axios.get(APP_URL+'/user/myappsondashboard',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -105,6 +109,7 @@ class Profile extends Component {
     }
 
     //delete the app on dashBoard apps list by updating state
+
     deleteAppFromDashBoard(id_app){
         this.setState({dashBoard_apps:this.state.dashBoard_apps.filter(item => item.id_app!==id_app)})
     }
@@ -146,7 +151,7 @@ class Profile extends Component {
                         <Modal isOpen={this.state.modalCreateApp} toggle={this.toggleModalAddApp} className={this.props.className}>
                             <ModalHeader toggle={this.toggleModalAddApp} close={closeBtn}>Add an App</ModalHeader>
                             <ModalBody>
-                                <CreateOrEditApp handleClose={this.toggleModalAddApp} addApp={this.addApp} item={null} oldLabels={null}/>
+                                <CreateOrEditApp handleClose={this.toggleModalAddApp} addApp={this.addApp} item={null} oldLabels={[]}/>
                             </ModalBody>
                         </Modal>
                     </Col>

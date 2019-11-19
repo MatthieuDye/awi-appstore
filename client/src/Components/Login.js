@@ -28,8 +28,8 @@ export default class Login extends Component {
         console.log(URL)
 
         return axios.post(APP_URL+'/user/authenticate', {
-            email: this.state.email,
-            password: this.state.password
+            mail_user: this.state.email,
+            password_user: this.state.password
         })
             .then(res => {
                 //if authentication OK, set token in localstorage and redirect to catalog

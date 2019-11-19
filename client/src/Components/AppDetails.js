@@ -19,15 +19,16 @@ class AppDetails extends Component {
             modalEditApp: false,
             added_app: false,
             labels:[],
-            rating:props.item.rank
+            rating:props.item.rating
         };
 
         this.addAppToDashBoard=this.addAppToDashBoard.bind(this);
         this.deleteAppFromDashBoard=this.deleteAppFromDashBoard.bind(this);
         this.deleteApp=this.deleteApp.bind(this);
-        this.addRank=this.addRank.bind(this);
-        this.editRank=this.editRank.bind(this);
-        this.hasRank=this.hasRank.bind(this);
+        this.addRating=this.addRating.bind(this);
+        this.editRating=this.editRating.bind(this);
+        this.hasRating=this.hasRating.bind(this);
+        this.hasAppOnDashBoard=this.hasAppOnDashBoard.bind(this);
         this.getLabels();
         this.hasAppOnDashBoard();
         console.log(this.props.item)
@@ -37,7 +38,7 @@ class AppDetails extends Component {
     getLabels(){
         axios.get(APP_URL+'/app/'+this.props.item.id_app+'/labels',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -56,9 +57,9 @@ class AppDetails extends Component {
 
     //send a request to know if the app has been added on the dashBoard and set the added_app state with this boolean
     hasAppOnDashBoard(){
-        axios.get(APP_URL+'/user/'+this.props.id_user+'/hasdownloadedapp/'+this.props.item.id_app,{
+        axios.get(APP_URL+'/user/'+this.props.id_user+'/hasappondashboard/'+this.props.item.id_app,{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -73,12 +74,12 @@ class AppDetails extends Component {
 
     //send a request to add the app on user dashBoard and set added_app state to true
     addAppToDashBoard(){
-        axios.post(APP_URL+'/user/mydownloadedapps',{
+        axios.post(APP_URL+'/user/myappsondashboard',{
             id_user: this.props.id_user,
             id_app: this.props.item.id_app
         },{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -99,13 +100,9 @@ class AppDetails extends Component {
 
     //send a request to delete app from dashBoard
     deleteAppFromDashBoard(){
-        axios.delete(APP_URL+'/user/'+this.props.id_user+'/mydownloadedapps/'+this.props.item.id_app,{
+        axios.delete(APP_URL+'/user/'+this.props.id_user+'/myappsondashboard/'+this.props.item.id_app,{
             headers:{
-                Authorization:localStorage.getItem('token')
-            }
-        },{
-            headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -114,7 +111,7 @@ class AppDetails extends Component {
                     added_app:false
                 })
             )
-            //trigger deleteAppFromDashBoard function of parent component (AppList) to delete the app from the list of Componen
+            //trigger deleteAppFromDashBoard function of parent component (AppList) to delete the app from the list of Component
             .then(() => {
                 if(this.props.deleteAppFromDashBoard){
                     this.props.deleteAppFromDashBoard(this.props.item.id_app)
@@ -123,57 +120,57 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
-    hasRank(){
-        axios.get(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app+'/rank',{
+    hasRating(){
+        axios.get(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app+'/rating',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(res => {
-                if(res.hasRank){
-                    this.editRank()
+                if(res.hasRating){
+                    this.editRating()
                 }
                 else{
-                    this.addRank()
+                    this.addRating()
                 }
                 })
             .then(() => this.hasAppOnDashBoard())
             .catch(err => console.log(err))
     }
 
-    addRank(){
-        axios.post(APP_URL+'/user/app/rank',{
+    addRating(){
+        axios.post(APP_URL+'/user/app/rating',{
             id_user: this.props.id_user,
             id_app: this.props.item.id_app,
-            rank: this.state.rating
+            rating: this.state.rating
         },{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
-            .then(()=>this.setState({rating:this.props.rank}))
+            .then(()=>this.setState({rating:this.props.rating}))
             .catch(err => console.log(err))
     }
 
-    editRank(){
-        axios.put(APP_URL+'/user/app/rank',{
+    editRating(){
+        axios.put(APP_URL+'/user/app/rating',{
             id_user: this.props.id_user,
             id_app: this.props.item.id_app,
-            rank: this.state.rating
+            rating: this.state.rating
         },{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
-            .then(()=>this.setState({rating:this.props.rank}))
+            .then(()=>this.setState({rating:this.props.rating}))
             .catch(err => console.log(err))
     }
 
     deleteApp(){
         axios.delete(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app,{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -201,7 +198,7 @@ class AppDetails extends Component {
 
     onStarClick(nextValue, prevValue, name) {
         this.setState({rating: nextValue});
-        this.hasRank()
+        this.hasRating()
     }
 
     componentWillUnmount() {
@@ -210,6 +207,7 @@ class AppDetails extends Component {
 
     componentDidMount() {
         this.getLabels();
+        this.hasAppOnDashBoard()
     }
 
 
@@ -286,7 +284,7 @@ class AppDetails extends Component {
                         <StarRatingComponent
                             className="star_component"
                             id={this.props.item.id_app+this.props.item.name_app}
-                            name="rank"
+                            name="rating"
                             starCount={5}
                             starHoverColor='rgb(255,0,0)'
                             value={this.state.rating}

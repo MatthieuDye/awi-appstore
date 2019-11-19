@@ -32,8 +32,8 @@ const insertLabelApp = (req, res) => {
 
 //delete a label from an app
 const deleteLabelApp = (req, res) => {
-    const id_app = req.headers.id_app;
-    const id_label = req.headers.id_label;
+    const id_app = req.params.id_app;
+    const id_label = req.params.id_label;
     db(table_name).where({id_label:id_label,id_app:id_app}).del()
         .then(() => {
             res.json({delete: 'true'})

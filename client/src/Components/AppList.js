@@ -20,7 +20,7 @@ class AppList extends Component {
                 <tr>
                     <th>Name</th>
                     <th>Developed by</th>
-                    <th>Rank</th>
+                    <th>Rating</th>
                 </tr>
                 </thead>
                 <tbody>

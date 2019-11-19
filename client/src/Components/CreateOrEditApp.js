@@ -24,7 +24,7 @@ class CreateOrEditApp extends Component {
         this.addLabel=this.addLabel.bind(this)
         this.getIdApp=this.getIdApp.bind(this)
         this.createLabelApp=this.createLabelApp.bind(this)
-        this.createRank=this.createRank.bind(this)
+        this.createRating=this.createRating.bind(this)
         this.deleteLabelApp=this.deleteLabelApp.bind(this)
 
         this.getIdUser()
@@ -54,7 +54,7 @@ class CreateOrEditApp extends Component {
     getIdUser(){
         axios.get(APP_URL+'/user',{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -71,11 +71,11 @@ class CreateOrEditApp extends Component {
     }
 
     //after the creation of the app, request the server to get its id
-    //after the request, create the link with labels and create rank
+    //after the request, create the link with labels and create rating
     getIdApp(){
         axios.get(APP_URL+'/app/'+this.state.name_app,{
             headers:{
-                Authorization:localStorage.getItem('token')
+                Authorization:'Bearer '+localStorage.getItem('token')
             }
         })
             .then(response => response.data)
@@ -85,22 +85,24 @@ class CreateOrEditApp extends Component {
                     return ''
                 })
             })
-            .then(() => this.createLabelApp())
-            .then(() => this.createRank())
+            .then(() => {
+                this.createLabelApp()
+            })
+            .then(() => this.createRating())
             .catch(err => console.log(err))
     }
 
-    //after getting id app, create a rank
+    //after getting id app, create a rating
     //after request, app creation is over, push to profile page
-    createRank(){
-        axios.post(APP_URL+'/user/app/rank', {
+    createRating(){
+        axios.post(APP_URL+'/user/app/rating', {
             id_user: this.state.id_creator,
             id_app: this.state.id_app,
-            rank: 2.5
+            rating: 2.5
         },
             {
                 headers: {
-                    Authorization: localStorage.getItem('token')
+                    Authorization:'Bearer '+ localStorage.getItem('token')
                 }
             })
             .then(this.props.addApp({
@@ -110,7 +112,7 @@ class CreateOrEditApp extends Component {
                 name_user:this.state.name_creator,
                 link_app:this.state.link_app,
                 description_app:this.state.description_app,
-                rank:2.5
+                rating:2.5
             }))
             .then(this.props.handleClose)
             .catch(err => console.log(err))
@@ -126,7 +128,7 @@ class CreateOrEditApp extends Component {
                     },
                     {
                         headers: {
-                            Authorization: localStorage.getItem('token')
+                            Authorization:'Bearer '+ localStorage.getItem('token')
                         },
                     })
                     .then(response => response.data)
@@ -145,11 +147,9 @@ class CreateOrEditApp extends Component {
 
     deleteLabelApp(){
         this.props.oldLabels.filter(el => !this.state.labels_app.includes(el.id_label)).map(label => {
-            axios.delete(APP_URL+'/app/labels',{
+            axios.delete(APP_URL+'/app/'+this.props.item.id_app+'/labels/'+label.id_label,{
                 headers:{
-                    Authorization:localStorage.getItem('token'),
-                    id_app: this.props.item.id_app,
-                    id_label: label.id_label
+                    Authorization:'Bearer '+localStorage.getItem('token')
                 }
             })
                 .then(response => response.data)
@@ -168,7 +168,7 @@ class CreateOrEditApp extends Component {
             },
             {
                 headers: {
-                Authorization: localStorage.getItem('token')
+                Authorization:'Bearer '+ localStorage.getItem('token')
                 },
             })
             .then(response => response.data)
@@ -189,7 +189,7 @@ class CreateOrEditApp extends Component {
             },
             {
                 headers: {
-                    Authorization: localStorage.getItem('token')
+                    Authorization:'Bearer '+ localStorage.getItem('token')
                 },
             })
             .then(response => response.data)

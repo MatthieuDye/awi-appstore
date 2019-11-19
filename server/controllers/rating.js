@@ -1,35 +1,25 @@
-const table_name = 'rank';
+const table_name = 'rating';
 const db = require('../database').db;
 
-const getNbRating = (req,res) => {
-    const id_app = req.headers.id_app;
-    db(table_name).select('id_app',db.raw('count(rank) as nb_rank')).where({id_app:id_app})
-        .then(items => {
-            if(items.length===1){
-                res.json({nb_ratings:items[0].nb_rank})
-            }
-        })
-        .catch(err => res.status(400).json({dbError: 'db error '+err}))
-}
 
-const hasRank = (req,res) => {
+const hasRating = (req,res) => {
     const id_app = req.params.id_app;
     const id_user = req.params.id_user;
     db.select('*').from(table_name).where({id_user:id_user,id_app:id_app})
         .then(items => {
             if(items.length===1){
-                res.json({hasRank:true})
+                res.json({hasRating:true})
             }
             else{
-                res.json({hasRank:false})
+                res.json({hasRating:false})
             }
         })
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const insertRank = (req, res) => {
-    const { id_user, id_app,rank } = req.body;
-    db(table_name).insert({id_user,id_app,rank})
+const insertRating = (req, res) => {
+    const { id_user, id_app,rating } = req.body;
+    db(table_name).insert({id_user,id_app,rating})
         .returning('*')
         .then(item => {
             res.json(item)
@@ -37,18 +27,18 @@ const insertRank = (req, res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const updateRank = (req, res) => {
-    const { id_user,id_app,rank } = req.body;
+const updateRating = (req, res) => {
+    const { id_user,id_app,rating } = req.body;
     db(table_name).where({
         id_user: id_user,
         id_app:  id_app
-    }).update({rank:rank})
+    }).update({rating:rating})
         .returning('*')
         .then()
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 }
 
-const deleteAllRankWithApp = (req, res,next) => {
+const deleteAllRatingWithApp = (req, res,next) => {
     const id_app = req.params.id_app;
     db(table_name).where({
         id_app:  id_app
@@ -60,9 +50,8 @@ const deleteAllRankWithApp = (req, res,next) => {
 }
 
 module.exports = {
-    insertRank,
-    updateRank,
-    deleteAllRankWithApp,
-    hasRank,
-    getNbRating
+    insertRating,
+    updateRating,
+    deleteAllRatingWithApp,
+    hasRating
 }

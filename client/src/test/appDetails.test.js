@@ -7,12 +7,12 @@ import {Table} from "reactstrap";
 Enzyme.configure({ adapter: new Adapter() })
 
 describe('matching cities to foods', () => {
-    const item = { id_app: 1, name_app:'lapinApp',name_user: 'lapin',description_app:'my first lapin app',rank:2.5};
+    const item = { id_app: 1, name_app:'lapinApp',name_user: 'lapin',description_app:'my first lapin app',rating:2.5};
     const id_user=2;
     const editAppClick = jest.fn();
     const deleteAppClick = jest.fn();
     const wrapper = mount(
-        <table><thead><tr><th>Name</th><th>Developed by</th><th>Rank</th></tr></thead>
+        <table><thead><tr><th>Name</th><th>Developed by</th><th>Rating</th></tr></thead>
             <tbody>
             <AppDetails key={item.id_app} item={item} id_user={id_user} editApp={editAppClick} deleteApp={deleteAppClick} />
             </tbody>
