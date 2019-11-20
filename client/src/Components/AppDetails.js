@@ -17,6 +17,7 @@ class AppDetails extends Component {
         this.state = {
             modalAppDetails: false,
             modalEditApp: false,
+            modalCheckDelete: false,
             added_app: false,
             labels:[],
             rating:props.item.rating
@@ -201,6 +202,7 @@ class AppDetails extends Component {
                     added_app:false
                 })
             )
+            .then(this.toggleModalCheckDeleteApp)
             //trigger the parent component function to delete app from list
             .then(this.props.deleteApp(this.props.item.id_app))
             .catch(err => console.log(err))
@@ -221,6 +223,12 @@ class AppDetails extends Component {
     toggleModalEditApp = () => {
         this.setState( prevState => ({
             modalEditApp: !prevState.modalEditApp
+        }))
+    };
+
+    toggleModalCheckDeleteApp = () => {
+        this.setState( prevState => ({
+        modalCheckDelete: !prevState.modalCheckDelete
         }))
     };
 
@@ -250,6 +258,7 @@ class AppDetails extends Component {
     render() {
         const closeBtn = <Button className="close" onClick={this.toggleModalDetailsApp}>&times;</Button>;
         const closeEditBtn = <Button className="close" onClick={this.toggleModalEditApp}>&times;</Button>;
+        const closeCheckDeleteBtn = <Button className="close" onClick={this.toggleModalCheckDeleteApp}>&times;</Button>;
 
         const editBtn = () =>{
             if(this.props.deleteApp) {
@@ -289,13 +298,13 @@ class AppDetails extends Component {
                 return <a href={this.props.item.link_app} target="external"><Button>Open</Button></a>
             }
             else{
-                return ''
+                return <i>No link</i>
             }
         };
 
         const deleteBtn = () =>{
             if(this.props.deleteApp){
-                return <Button className="deleteApp" onClick={this.deleteApp.bind(this)}>Del</Button>
+                return <Button className="deleteApp" onClick={this.toggleModalCheckDeleteApp}>Del</Button>
             }
             else{
                 return ''
@@ -340,8 +349,19 @@ class AppDetails extends Component {
                                 );
                             }} />
                     </div></td>
+                    <td>{link()}</td>
                     <td>{addBtn()}</td>
-                    <td>{deleteBtn()}</td>
+                    <td>{deleteBtn()}
+                        <Modal isOpen={this.state.modalCheckDelete} toggle={this.toggleModalCheckDeleteApp} className={this.props.className}>
+                            <ModalHeader toggle={this.toggleModalCheckDeleteApp} close={closeCheckDeleteBtn}>{this.props.item.name_app}</ModalHeader>
+                            <ModalBody>
+                                <div>
+                                    <h4>Do you really want to delete {this.props.item.name_app} ?</h4><br/>
+                                    <Button onClick={this.deleteApp.bind(this)}>Yes</Button><Button onClick={this.toggleModalCheckDeleteApp}>No</Button>
+                                </div>
+                            </ModalBody>
+                        </Modal>
+                    </td>
                     <td>{editBtn()}
                     {modalEdit()}
                     <Modal isOpen={this.state.modalAppDetails} toggle={this.toggleModalDetailsApp} className={this.props.className}>

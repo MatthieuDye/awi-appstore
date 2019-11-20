@@ -22,7 +22,9 @@ router.get('/myappsondashboard',middleware.withAuth,(req,res) => app.getUserApps
 router.post('/myappsondashboard',middleware.withAuth,middleware.verifyId,(req,res) => app.insertUserApp(req,res));
 
 //remove an app on a user dashboard
-router.delete('/:id_user/myappsondashboard/:id_app',middleware.withAuth,middleware.verifyId,(req,res) => app.deleteUserApp(req,res));
+router.delete('/:id_user/myappsondashboard/:id_app',middleware.withAuth,(req,res) => app.deleteUserApp(req,res));
+
+router.delete('/name/:name_user/myappsondashboard/:id_app',middleware.withAuth,(req,res) => app.deleteUserApp(req,res));
 
 //say if an app is on user dashboard
 router.get('/:id_user/hasappondashboard/:id_app',middleware.withAuth,(req,res) => user.hasAppOnDashBoard(req,res));
@@ -45,7 +47,7 @@ router.delete('/:id_user/app/:id_app',middleware.withAuth,
     (req, res) => app.deleteApp(req, res));
 
 //same task but with name_user instead of id_user in params
-router.delete('/:name_user/app/:id_app',middleware.withAuth,
+router.delete('/name/:name_user/app/:id_app',middleware.withAuth,
     middleware.verifyId,
     app.deleteAllUserAppWithApp,
     label_app.deleteAllLabelAppWithApp,

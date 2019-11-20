@@ -17,7 +17,8 @@ class Profile extends Component {
             apps_created:[],
             dashBoard_apps:[],
             modalCreateApp: false
-        }
+        };
+
         this.toggleModalAddApp=this.toggleModalAddApp.bind(this);
         this.addApp=this.addApp.bind(this);
         this.deleteApp=this.deleteApp.bind(this);
@@ -126,6 +127,11 @@ class Profile extends Component {
         this.setState(prevState => ({
             modalCreateApp: !prevState.modalCreateApp
         }))
+    };
+
+    handleLogOut() {
+        localStorage.removeItem('token');
+        this.props.history.push('/login');
     }
 
     render() {
@@ -141,7 +147,7 @@ class Profile extends Component {
                     <Col>
                         <h1 style={{margin: "20px 0"}}>{user_name}</h1>
                     </Col>
-                    <Col></Col>
+                    <Col><Button onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
                 </Row>
                 <Row>
                     <Col>

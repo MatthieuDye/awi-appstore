@@ -4,6 +4,7 @@ import AppList from "./AppList";
 import axios from 'axios';
 import {APP_URL} from "../environment";
 import {Link} from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 /**
  * Catalog Component which show the catalog page with all apps
@@ -14,7 +15,8 @@ class Catalog extends Component {
         this.state = {
             id_user: 0,
             items: []
-        }
+        };
+
         this.getUser();
         this.getItems();
     }
@@ -55,6 +57,11 @@ class Catalog extends Component {
             .catch(err => console.log(err))
     }
 
+    handleLogOut() {
+        localStorage.removeItem('token');
+        this.props.history.push('/login');
+    }
+
 
     componentDidMount(){
         this.getItems();
@@ -72,7 +79,7 @@ class Catalog extends Component {
                     <Col>
                         <h1 style={{margin: "20px 0"}}>CastelStore</h1>
                     </Col>
-                    <Col></Col>
+                    <Col><Button onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
                 </Row>
 
                 <Row>

@@ -12,7 +12,7 @@ const morgan = require('morgan'); // logs requests
 const app = express();
 
 // Allowed URL to send request to this server
-const whitelist = [process.env.NODE_ENV==='production'?process.env.APP_FRONT:process.env.APP_FRONT_LOCAL,"https://mydash.igpolytech.fr","https://mydash-dev.igpolytech.fr"];
+const whitelist = [process.env.NODE_ENV==='production'?process.env.APP_FRONT:process.env.APP_FRONT_LOCAL,"https://mydash.igpolytech.fr","https://mydash-dev.igpolytech.fr","http://localhost:3000"];
 
 //verify that URL requester is in the whitelist, if not, send it an error message
 const corsOptions = {
