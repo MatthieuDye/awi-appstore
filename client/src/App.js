@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
-import Main from './Components/Main'
-import CreateOrEditApp from './Components/CreateOrEditApp';
-//Import all needed Component for this tutorial
+import Catalog from './Components/Catalog'
+
 import {
     BrowserRouter as Router,
     Route,
@@ -17,8 +16,7 @@ class App extends Component {
         return (
             <Router>
                 <Switch>
-                <Route exact path="/" component={WithAuth(Main)} />
-                <Route exact path="/create" component={WithAuth(CreateOrEditApp)}/>
+                <Route exact path="/" component={WithAuth(Catalog)} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/profile" component={WithAuth(Profile)} />
                 </Switch>

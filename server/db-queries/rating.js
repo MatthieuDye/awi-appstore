@@ -1,7 +1,11 @@
 const table_name = 'rating';
 const db = require('../database').db;
 
-
+/**
+ * hasRating: query db to know if a user has rated an app identified in req.params
+ * @param req
+ * @param res
+ */
 const hasRating = (req,res) => {
     const id_app = req.params.id_app;
     const id_user = req.params.id_user;
@@ -17,6 +21,11 @@ const hasRating = (req,res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
+/**
+ * insertRating: insert in db a rating for a user on an app identified in req.body
+ * @param req
+ * @param res
+ */
 const insertRating = (req, res) => {
     const { id_user, id_app,rating } = req.body;
     db(table_name).insert({id_user,id_app,rating})
@@ -27,6 +36,11 @@ const insertRating = (req, res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
+/**
+ * updateRating: update rating from user on an app identified in req.body
+ * @param req
+ * @param res
+ */
 const updateRating = (req, res) => {
     const { id_user,id_app,rating } = req.body;
     db(table_name).where({
@@ -36,8 +50,14 @@ const updateRating = (req, res) => {
         .returning('*')
         .then()
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
-}
+};
 
+/**
+ * deleteAllRatingWithApp: delete in db all ratings of an app identified in req.params
+ * @param req
+ * @param res
+ * @param next
+ */
 const deleteAllRatingWithApp = (req, res,next) => {
     const id_app = req.params.id_app;
     db(table_name).where({

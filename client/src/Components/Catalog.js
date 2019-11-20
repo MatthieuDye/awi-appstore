@@ -5,10 +5,12 @@ import axios from 'axios';
 import {APP_URL} from "../environment";
 import {Link} from "react-router-dom";
 
-
-class Main extends Component {
+/**
+ * Catalog Component which show the catalog page with all apps
+ */
+class Catalog extends Component {
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             id_user: 0,
             items: []
@@ -17,7 +19,9 @@ class Main extends Component {
         this.getItems();
     }
 
-    //send a request to get the user connected
+    /**
+     * send a request to server to get the user connected
+     */
     getUser(){
         axios.get(APP_URL+'/user',{
             headers:{
@@ -34,7 +38,9 @@ class Main extends Component {
             .catch(err => console.log(err))
     }
 
-    //send a request to get all apps
+    /**
+     * send a request to server to get all apps
+     */
     getItems(){
         axios.get(APP_URL+'/app',{
             headers:{Authorization:'Bearer '+localStorage.getItem('token')}
@@ -52,7 +58,7 @@ class Main extends Component {
 
     componentDidMount(){
         this.getItems();
-        this.getUser()
+        this.getUser();
 
     }
 
@@ -79,4 +85,4 @@ class Main extends Component {
     }
 }
 
-export default Main
+export default Catalog

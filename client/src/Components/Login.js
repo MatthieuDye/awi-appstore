@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import castle from '../castle.jpg';
+import castle from '../assets/images/castle.jpg';
 import {Col, Row, Container, Button} from 'react-bootstrap';
 import axios from "axios";
 import {APP_FRONT_URL, APP_URL} from "../environment";
@@ -8,7 +8,6 @@ export default class Login extends Component {
 
     constructor(props){
         super(props);
-        this.redirectToProfile=this.redirectToProfile.bind(this)
     }
 
     authPolytech = () => {

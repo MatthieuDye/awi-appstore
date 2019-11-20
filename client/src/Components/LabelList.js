@@ -8,7 +8,7 @@ class LabelList extends Component {
         const items = this.props.items.map(item => {
             return (<tr key={item.id_label}><td>{item.name_label}</td></tr>
             )
-        })
+        });
 
         return (
             <Table responsive hover>

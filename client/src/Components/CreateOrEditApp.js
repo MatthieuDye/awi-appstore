@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import {Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Modal} from 'reactstrap';
 import '../App.css'
 import axios from 'axios'
 import {APP_URL} from "../environment";
 class CreateOrEditApp extends Component {
 
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             id_app: 0,
             name_app: '',
@@ -16,19 +16,21 @@ class CreateOrEditApp extends Component {
             link_app:'',
             value_select_label: 'choose label',
             labels: [],
-            //
-            labels_app: this.props.oldLabels?this.props.oldLabels.map(el => el.id_label):[]
+            //if there are already labels for the app (edit case), push them in the state
+            labels_app: this.props.oldLabels?this.props.oldLabels.map(el => el.id_label):[],
+            modalErrorApp:false
 
-        }
-        this.deleteLabel=this.deleteLabel.bind(this)
-        this.addLabel=this.addLabel.bind(this)
-        this.getIdApp=this.getIdApp.bind(this)
-        this.createLabelApp=this.createLabelApp.bind(this)
-        this.createRating=this.createRating.bind(this)
-        this.deleteLabelApp=this.deleteLabelApp.bind(this)
+        };
+        this.deleteLabel=this.deleteLabel.bind(this);
+        this.addLabel=this.addLabel.bind(this);
+        this.getIdApp=this.getIdApp.bind(this);
+        this.createLabelApp=this.createLabelApp.bind(this);
+        this.createRating=this.createRating.bind(this);
+        this.deleteLabelApp=this.deleteLabelApp.bind(this);
+        this.toggleModalError=this.toggleModalError.bind(this);
 
-        this.getIdUser()
-        this.getLabels()
+        this.getIdUser();
+        this.getLabels();
 
     }
 
@@ -36,8 +38,10 @@ class CreateOrEditApp extends Component {
         this.setState({[e.target.name]: e.target.value})
     };
 
-
-    //add the label selected in list of labels of the app (set labels_app state)
+    /**
+     * addLabel: add the label selected in list of labels of the app by setting labels_app state
+     * @param event: event.target.value contains the label to add
+     */
     addLabel(event){
         this.setState({value_select_label:event.target.value});
         if(!this.state.labels_app.includes(event.target.value)) {
@@ -45,12 +49,17 @@ class CreateOrEditApp extends Component {
         }
     }
 
-    //delete the label selected from list of labels of the app (set labels_app state)
+    /**
+     * deleteLabel: delete the label selected from list of labels of the app by setting labels_app state
+     * @param id_label: id of label to delete from state
+     */
     deleteLabel(id_label){
         this.setState({labels_app:this.state.labels_app.filter(id => id!==id_label)})
     }
 
-    //request to server to get id of user connected (set state id_creator)
+    /**
+     * getIdUser: request to server to get id of user connected and set state id_creator with his name
+     */
     getIdUser(){
         axios.get(APP_URL+'/user',{
             headers:{
@@ -62,7 +71,9 @@ class CreateOrEditApp extends Component {
             .catch(err => console.log(err))
     }
 
-    //request to server to get all labels (set state labels)
+    /**
+     * getLabels: request to server to get all labels and set state labels
+     */
     getLabels(){
         axios.get(APP_URL+'/label')
             .then(response => response.data)
@@ -70,8 +81,10 @@ class CreateOrEditApp extends Component {
             .catch(err => console.log(err))
     }
 
-    //after the creation of the app, request the server to get its id
-    //after the request, create the link with labels and create rating
+    /**
+     * getIdApp: get id of the app which have been created, set state of id_app, and then, create its labels and a rating
+     * id_app is necessary to add in database the link between app and labels and rating
+     */
     getIdApp(){
         axios.get(APP_URL+'/app/'+this.state.name_app,{
             headers:{
@@ -81,7 +94,7 @@ class CreateOrEditApp extends Component {
             .then(response => response.data)
             .then(items => {
                 items.map(item => {
-                    this.setState({id_app:item.id_app})
+                    this.setState({id_app:item.id_app});
                     return ''
                 })
             })
@@ -92,8 +105,10 @@ class CreateOrEditApp extends Component {
             .catch(err => console.log(err))
     }
 
-    //after getting id app, create a rating
-    //after request, app creation is over, push to profile page
+    /**
+     * createRating: send a request to server to add a rating for the app from the actual user
+     * it is the last action of creating an app, then, trigger addApp function of parent component to add the app to profile list
+     */
     createRating(){
         axios.post(APP_URL+'/user/app/rating', {
             id_user: this.state.id_creator,
@@ -105,6 +120,7 @@ class CreateOrEditApp extends Component {
                     Authorization:'Bearer '+ localStorage.getItem('token')
                 }
             })
+            //trigger function in parent component with app info in params
             .then(this.props.addApp({
                 id_app:this.state.id_app,
                 name_app:this.state.name_app,
@@ -114,12 +130,16 @@ class CreateOrEditApp extends Component {
                 description_app:this.state.description_app,
                 rating:2.5
             }))
+            //close modal in parent component
             .then(this.props.handleClose)
             .catch(err => console.log(err))
     }
 
-    //after getting id app,create link between labels and app
+    /**
+     * createLabelApp: send a request to server to insert links between labels and app
+     */
     createLabelApp() {
+        //for each label added (except labels already added in edit case)
         this.state.labels_app.filter(el => !this.props.oldLabels.map(el => el.id_label).includes(el)).map(label => {
             if (label !== 'choose label') {
                 axios.post(APP_URL + '/app/labels', {
@@ -145,7 +165,11 @@ class CreateOrEditApp extends Component {
         });
     }
 
+    /**
+     * deleteLabelApp: in edit case, request server to delete link between app and labels
+     */
     deleteLabelApp(){
+        //for each labels which were in the old labels list but not in new one
         this.props.oldLabels.filter(el => !this.state.labels_app.includes(el.id_label)).map(label => {
             axios.delete(APP_URL+'/app/'+this.props.item.id_app+'/labels/'+label.id_label,{
                 headers:{
@@ -157,11 +181,15 @@ class CreateOrEditApp extends Component {
         })
     }
 
-    //submit the form of app creation, send a post request to server with data
+    /**
+     * submit the form of app creation, send a post request to server with data
+     * then, trigger getIdApp function to get the id, then it will create links with labels and add a rating
+     * @param e: event
+     */
     submitFormAdd = e => {
         e.preventDefault();
         axios.post(APP_URL+'/app', {
-            name_app: this.state.name_app,
+            name_app: this.state.name_app.toLowerCase(),
             id_creator: this.state.id_creator,
             description_app: this.state.description_app,
             link_app: this.state.link_app
@@ -173,12 +201,16 @@ class CreateOrEditApp extends Component {
             })
             .then(response => response.data)
             .then(() => this.getIdApp())
-            .catch(err => console.log(err));
+            .catch(err => this.toggleModalError());
 
     };
 
+    /**
+     * submit the form of app edition, send a post request to server with data
+     * then, it will create links with new labels and delete with old ones
+     * @param e: event
+     */
     submitFormEdit = e => {
-        console.log(this.props.editApp)
         e.preventDefault();
         axios.put(APP_URL+'/app', {
                 id_app:this.state.id_app,
@@ -196,17 +228,24 @@ class CreateOrEditApp extends Component {
             .then(() => this.createLabelApp())
             .then(() => this.deleteLabelApp())
             .then(this.props.handleClose)
-            .catch(err => console.log(err));
+            .catch(err => this.toggleModalError());
 
     };
+
+    toggleModalError = () => {
+        //when triggered, modalCreateApp state take the opposite value
+        this.setState(prevState => ({
+            modalErrorApp: !prevState.modalErrorApp
+        }))
+    }
 
 
 
     componentDidMount(){
         // if item exists, populate the state with proper data
-        this.getLabels()
+        this.getLabels();
         if(this.props.item){
-            const { id_app, name_app,id_creator,description_app,link_app } = this.props.item
+            const { id_app, name_app,id_creator,description_app,link_app } = this.props.item;
             this.setState({ id_app, name_app,id_creator,description_app,link_app })
         }
     }
@@ -223,13 +262,14 @@ class CreateOrEditApp extends Component {
         const labels_selected = this.state.labels_app.map(item => {
             return (
                 <tr key={item}>
-                    {console.log(this.state.labels_app)}
                     <td>{this.state.labels.filter(el => el.id_label.toString()===item.toString()).map(el => {
                         return(el.name_label)})}</td>
                     <td><Button onClick={() => this.deleteLabel(item)}>delete</Button></td>
                 </tr>
             )
         });
+
+        const closeErrorBtn = <Button className="close" onClick={this.toggleModalError}>&times;</Button>;
 
         return (
             <Form id="createAppForm" onSubmit={
@@ -261,7 +301,15 @@ class CreateOrEditApp extends Component {
                     {labels_selected}
                     </tbody>
                 </table>
-                <Button >Submit</Button>
+                <Button>Submit</Button>
+
+                <Modal isOpen={this.state.modalErrorApp} toggle={this.toggleModalError} className={this.props.className}>
+                    <ModalHeader toggle={this.toggleModalError} close={closeErrorBtn}>Error</ModalHeader>
+                    <ModalBody>
+                        <h3>App name already exists</h3>
+                    </ModalBody>
+                </Modal>
+
             </Form>
         );
     }

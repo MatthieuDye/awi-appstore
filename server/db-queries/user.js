@@ -1,7 +1,11 @@
 const table_name = 'user';
-const middleware = require('../middleware');
 const db = require('../database').db;
 
+/**
+ * authenticateUser: query db to know if user exists thanks to his name in req, and insert it if not
+ * @param req
+ * @param res
+ */
 const authenticateUser =(req,res) => {
     db.select('id_user').from('user').where({name_user:req.name_user})
         .then(items => {
@@ -13,18 +17,11 @@ const authenticateUser =(req,res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const getUsers = (req, res) => {
-    db.select('*').from(table_name)
-        .then(items => {
-            if(items.length){
-                res.json(items)
-            } else {
-                res.json({dataExists: 'false'})
-            }
-        })
-        .catch(err => res.status(400).json({dbError: 'db error '+err}))
-};
-
+/**
+ * getUserByName: get a user in db by his name identified in req
+ * @param req
+ * @param res
+ */
 const getUserByName = (req, res) => {
     db.select('*')
         .from(table_name)
@@ -39,6 +36,11 @@ const getUserByName = (req, res) => {
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
+/**
+ * hasAppOnDashboard: query db to know if a user has an app on his dashboard with user and app info in req.params
+ * @param req
+ * @param res
+ */
 const hasAppOnDashBoard = (req,res) =>{
     const id_user = req.params.id_user;
     const id_app = req.params.id_app;
@@ -56,33 +58,11 @@ const hasAppOnDashBoard = (req,res) =>{
         .catch(err => res.status(400).json({dbError: 'db error '+err}))
 };
 
-const getUser = (req, res) => {
-    const {mail_user,password_user} = req.body;
-    db.select('id_user','name_user','mail_user')
-        .from(table_name)
-        .where({
-            mail_user: mail_user,
-            password_user:  password_user
-        })
-        .then(items => {
-            if(items.length===1){
-                const id_user = items[0].id_user;
-                const name_user = items[0].name_user;
-                const payload = {name_user};
-                const jwt = require('jsonwebtoken');
-                //Issue token
-                const token = jwt.sign(payload, process.env.SECRET_TOKEN, {
-                    expiresIn: '1h'
-                });
-                res.send(token);
-            }
-            else{
-                res.json({error:'incorrect mail or password'})
-            }
-        })
-        .catch(err => res.status(400).json({dbError: 'db error '+err}))
-};
-
+/**
+ * insertUser: insert a user in db with info in req
+ * @param req
+ * @param res
+ */
 const insertUser = (req, res) => {
     const name_user = req.name_user;
     const mail_user = name_user+'@etu.umontpellier.fr';
@@ -98,9 +78,7 @@ const insertUser = (req, res) => {
 
 module.exports = {
     authenticateUser,
-    getUsers,
     getUserByName,
-    getUser,
     insertUser,
     hasAppOnDashBoard
 };

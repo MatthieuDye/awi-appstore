@@ -1,6 +1,11 @@
 const table_name = 'label';
 const db = require('../database').db;
 
+/**
+ * getLabels: query db to have all existing labels
+ * @param req
+ * @param res
+ */
 const getLabels = (req, res) => {
     db.select('*').from(table_name)
         .then(items => {

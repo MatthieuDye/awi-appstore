@@ -1,5 +1,6 @@
 require('dotenv').config();
-// db Connection
+
+// db Connection with knex
 const db = process.env.NODE_ENV==='production'?
     require('knex')({
         client: 'pg',
@@ -8,10 +9,10 @@ const db = process.env.NODE_ENV==='production'?
     require('knex')({
         client: 'pg',
         connection: {
-            host : '127.0.0.1',
-            user : 'castelstore_user',
-            password : 'dB604Tn',
-            database : 'castelstore'
+            host : process.env.HOST_LOCAL_DB,
+            user : process.env.USER_LOCAL_DB,
+            password : process.env.PASSWORD_LOCAL_DB,
+            database : process.env.LOCAL_DB
         }
     });
 

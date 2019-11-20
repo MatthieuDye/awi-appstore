@@ -7,11 +7,19 @@ class AppList extends Component {
 
     render() {
 
+        //for each app, create the AppDetails component with props for edit and delete app, add and remove app from dashboard
         const items = this.props.items!==null?this.props.items.map(item => {
                 return (
-                    <AppDetails key={item.id_app} item={item} id_user={this.props.id_user} editApp={this.props.editApp} deleteAppFromDashBoard={this.props.deleteAppFromDashBoard} addAppToDashBoard={this.props.addAppToDashBoard} deleteApp={this.props.deleteApp} oldLabels={this.props.labels}/>
+                    <AppDetails key={item.id_app}
+                                item={item}
+                                id_user={this.props.id_user}
+                                editApp={this.props.editApp}
+                                deleteApp={this.props.deleteApp}
+                                deleteAppFromDashBoard={this.props.deleteAppFromDashBoard}
+                                addAppToDashBoard={this.props.addAppToDashBoard}
+                                oldLabels={this.props.labels}/>
                         )
-            }):<tr><td>No app on your dashBoard</td></tr>;
+            }):<tr><td>No apps</td></tr>;
 
 
         return (

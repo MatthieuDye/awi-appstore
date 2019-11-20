@@ -115,8 +115,8 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this.getAppsOnDashBoard()
-        this.getAppsCreatedByUser()
+        this.getAppsOnDashBoard();
+        this.getAppsCreatedByUser();
         this.getUser()
     }
 

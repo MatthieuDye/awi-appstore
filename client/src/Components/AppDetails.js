@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import {Modal, ModalHeader, ModalBody } from 'reactstrap'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
-import emptystar from "../star_favorite_favorite_favorite_favorite_2359.png"
-import fullstar from "../star_favorite_favorite_favorite_favorite_2360.png"
-import halfstar from "../star_favorite_favorite_favorite_favorite_2361.png";
+import emptystar from "../assets/images/star_favorite_favorite_favorite_favorite_2359.png"
+import fullstar from "../assets/images/star_favorite_favorite_favorite_favorite_2360.png"
+import halfstar from "../assets/images/star_favorite_favorite_favorite_favorite_2361.png";
 
 import {APP_URL} from "../environment";
 import LabelList from "./LabelList";
@@ -31,10 +31,11 @@ class AppDetails extends Component {
         this.hasAppOnDashBoard=this.hasAppOnDashBoard.bind(this);
         this.getLabels();
         this.hasAppOnDashBoard();
-        console.log(this.props.item)
     }
 
-    //send a request to have labels of the app and set labels state with them
+    /**
+     * getLabels: send a request to server to have labels of the app and set labels state with them
+     */
     getLabels(){
         axios.get(APP_URL+'/app/'+this.props.item.id_app+'/labels',{
             headers:{
@@ -55,7 +56,9 @@ class AppDetails extends Component {
 
     }
 
-    //send a request to know if the app has been added on the dashBoard and set the added_app state with this boolean
+    /**
+     * hasAppOnDashboard: send a request to know if the app has been added on the dashBoard and set the added_app state with this boolean
+     */
     hasAppOnDashBoard(){
         axios.get(APP_URL+'/user/'+this.props.id_user+'/hasappondashboard/'+this.props.item.id_app,{
             headers:{
@@ -72,7 +75,9 @@ class AppDetails extends Component {
     }
 
 
-    //send a request to add the app on user dashBoard and set added_app state to true
+    /**
+     * addAppToDashBoard: send a request to server to add the app on user dashBoard and set added_app state to true
+     */
     addAppToDashBoard(){
         axios.post(APP_URL+'/user/myappsondashboard',{
             id_user: this.props.id_user,
@@ -98,7 +103,9 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
-    //send a request to delete app from dashBoard
+    /**
+     * deleteAppFromDashBoard: send a request to server to delete app from dashBoard
+     */
     deleteAppFromDashBoard(){
         axios.delete(APP_URL+'/user/'+this.props.id_user+'/myappsondashboard/'+this.props.item.id_app,{
             headers:{
@@ -120,6 +127,10 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
+    /**
+     * hasRating: triggered after user rate the app
+     * request the server to know if actual user has rated the app and then create or edit the rating of him on app, depending of result
+     */
     hasRating(){
         axios.get(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app+'/rating',{
             headers:{
@@ -128,9 +139,11 @@ class AppDetails extends Component {
         })
             .then(response => response.data)
             .then(res => {
+                //if he has already rated the app, edit his rating
                 if(res.hasRating){
                     this.editRating()
                 }
+                //else, create his rating
                 else{
                     this.addRating()
                 }
@@ -139,6 +152,9 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
+    /**
+     * addRating: request the server to add rating of user on app
+     */
     addRating(){
         axios.post(APP_URL+'/user/app/rating',{
             id_user: this.props.id_user,
@@ -153,6 +169,9 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
+    /**
+     * editRating: request the server to edit rating of user on app
+     */
     editRating(){
         axios.put(APP_URL+'/user/app/rating',{
             id_user: this.props.id_user,
@@ -167,6 +186,9 @@ class AppDetails extends Component {
             .catch(err => console.log(err))
     }
 
+    /**
+     * deleteApp: request the server to delete an app
+     */
     deleteApp(){
         axios.delete(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app,{
             headers:{
@@ -179,25 +201,38 @@ class AppDetails extends Component {
                     added_app:false
                 })
             )
+            //trigger the parent component function to delete app from list
             .then(this.props.deleteApp(this.props.item.id_app))
             .catch(err => console.log(err))
     }
 
-
+    /**
+     * toggleModalDetailsApp: change state of modalAppDetails to open and close the modal
+     */
     toggleModalDetailsApp = () => {
         this.setState(prevState => ({
             modalAppDetails: !prevState.modalAppDetails
         }))
-    }
+    };
 
+    /**
+     * toggleModalEditApp: change state of modalEditApp to open and close the modal
+     */
     toggleModalEditApp = () => {
         this.setState( prevState => ({
             modalEditApp: !prevState.modalEditApp
         }))
-    }
+    };
 
+    /**
+     * onStarClick: store in rating state the rating given by the user on the app and save this rating
+     * @param nextValue: the value of Star component after user rated the app, his rating
+     * @param prevValue: the value of star component before user rated the app, the average rating
+     * @param name
+     */
     onStarClick(nextValue, prevValue, name) {
         this.setState({rating: nextValue});
+        //request the server to save it
         this.hasRating()
     }
 

@@ -109,7 +109,6 @@ const deleteApp = (req, res) => {
 const deleteUserApp = (req, res) => {
     const name_user = req.params.name_user || "";
     const id_user = req.params.id_user || 0;
-    console.log(id_user)
     const id_app = req.params.id_app;
 
     db.select('id_user').from(table_user).where({id_user:id_user}).orWhere({name_user:name_user})
@@ -160,7 +159,7 @@ const getUserAppsOnDashBoard = (req,res) =>{
 };
 
 /**
- * insertUserApp: in
+ * insertUserApp: insert user in database
  * @param req
  * @param res
  */
