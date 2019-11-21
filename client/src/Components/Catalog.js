@@ -74,12 +74,12 @@ class Catalog extends Component {
             <Container className="App">
                 <Row>
                     <Col>
-                        <Link to={'/profile'}><h5>Profile</h5></Link>
+                            <Link to={'/profile'}><h5 style={{color : '#36388b' }}>Profile</h5></Link>
                     </Col>
                     <Col>
                         <h1 style={{margin: "20px 0"}}>CastelStore</h1>
                     </Col>
-                    <Col><Button onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
+                    <Col><Button variant="danger" onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
                 </Row>
 
                 <Row>
