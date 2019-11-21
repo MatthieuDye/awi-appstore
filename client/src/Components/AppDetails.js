@@ -262,7 +262,7 @@ class AppDetails extends Component {
 
         const editBtn = () =>{
             if(this.props.deleteApp) {
-                return <Button className="editAppBtn" onClick={this.toggleModalEditApp}>Edit App</Button>
+                return <Button variant="outline-warning" className="editAppBtn" onClick={this.toggleModalEditApp}>Edit App</Button>
             }
            else{
                return ''
@@ -286,16 +286,16 @@ class AppDetails extends Component {
 
         const addBtn =  () => {
             if(this.state.added_app){
-                return <Button className="delete" onClick={this.deleteAppFromDashBoard}>Remove from my DashBoard</Button>
+                return <Button variant="outline-secondary" className="delete" onClick={this.deleteAppFromDashBoard}>Remove from my DashBoard</Button>
             }
             else{
-                return <Button className="add" onClick={this.addAppToDashBoard}>Add to my DashBoard</Button>
+                return <Button variant="outline-success" className="add" onClick={this.addAppToDashBoard}>Add to my DashBoard</Button>
             }
         };
 
         const link = () =>{
             if(this.props.item.link_app!==''){
-                return <a href={this.props.item.link_app} target="external"><Button>Open</Button></a>
+                return <a href={this.props.item.link_app} target="external"><Button variant="outline-primary">Open</Button></a>
             }
             else{
                 return <i>No link</i>
@@ -304,7 +304,7 @@ class AppDetails extends Component {
 
         const deleteBtn = () =>{
             if(this.props.deleteApp){
-                return <Button className="deleteApp" onClick={this.toggleModalCheckDeleteApp}>Del</Button>
+                return <Button variant="outline-danger" className="deleteApp" onClick={this.toggleModalCheckDeleteApp}>Delete</Button>
             }
             else{
                 return ''
