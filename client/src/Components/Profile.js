@@ -151,19 +151,19 @@ class Profile extends Component {
             <Container className="App">
                 <Row>
                     <Col>
-                        <Link to={'/'}><h5>Catalog</h5></Link>
+                        <Link to={'/'}><h5 style={{color : '#36388b' }}>Store</h5></Link>
                     </Col>
                     <Col>
                         <h1 style={{margin: "20px 0"}}>{user_name}</h1>
                     </Col>
-                    <Col><Button onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
+                    <Col><Button variant="danger" onClick={this.handleLogOut.bind(this)}>Logout</Button></Col>
                 </Row>
                 <Row>
                     <Col>
                         <h2>Applications you created</h2>
                     </Col>
                     <Col>
-                        <Button onClick={this.toggleModalAddApp}>Add an App</Button>
+                        <Button variant="success" onClick={this.toggleModalAddApp}>Add an App</Button>
                         <Modal isOpen={this.state.modalCreateApp} toggle={this.toggleModalAddApp} className={this.props.className}>
                             <ModalHeader toggle={this.toggleModalAddApp} close={closeBtn}>Add an App</ModalHeader>
                             <ModalBody>
