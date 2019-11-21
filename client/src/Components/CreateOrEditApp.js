@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Modal} from 'reactstrap';
+import {Button, Form, FormGroup, ModalBody, Modal} from 'react-bootstrap';
+import {Label, Input, ModalHeader} from 'reactstrap'
 import '../App.css'
 import axios from 'axios'
 import {APP_URL} from "../environment";
@@ -267,7 +268,7 @@ class CreateOrEditApp extends Component {
                 <tr key={item}>
                     <td>{this.state.labels.filter(el => el.id_label.toString()===item.toString()).map(el => {
                         return(el.name_label)})}</td>
-                    <td><Button onClick={() => this.deleteLabel(item)}>delete</Button></td>
+                    <td><Button variant="danger" onClick={() => this.deleteLabel(item)}>delete</Button></td>
                 </tr>
             )
         });
@@ -304,7 +305,7 @@ class CreateOrEditApp extends Component {
                     {labels_selected}
                     </tbody>
                 </table>
-                <Button variant="outline-secondary">Submit</Button>
+                <Button variant="outline-success">Submit</Button>
 
                 <Modal isOpen={this.state.modalErrorApp} toggle={this.toggleModalError} className={this.props.className}>
                     <ModalHeader toggle={this.toggleModalError} close={closeErrorBtn}>Error</ModalHeader>

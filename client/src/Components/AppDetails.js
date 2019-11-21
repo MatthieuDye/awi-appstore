@@ -372,11 +372,13 @@ class AppDetails extends Component {
                     <Modal isOpen={this.state.modalAppDetails} toggle={this.toggleModalDetailsApp}
                            className={this.props.className}>
                         <ModalHeader toggle={this.toggleModalDetailsApp}
-                                     close={closeBtn}>{this.props.item.name_app}</ModalHeader>
+                                     close={closeBtn}><h2>{this.props.item.name_app}</h2></ModalHeader>
                         <ModalBody>
                             <div>
-                                Description : {this.props.item.description_app}<br/>
-                                {link()}<br/>
+                                <h6>- Description : {this.props.item.description_app}</h6>
+                                <br/>
+                                <h6>- Link of the App : {link()} </h6>
+                                <br/>
                                 {labels()}
                                 {addBtn()}
                             </div>
