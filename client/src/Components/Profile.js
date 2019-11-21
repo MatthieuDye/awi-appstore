@@ -89,24 +89,33 @@ class Profile extends Component {
         this.setState({apps_created: [...this.state.apps_created, app]})
     }
 
-    //edit app on created apps list by updtating state
-    editApp(app){
-        //for each app created, if it is the app edited, replace it by app on param, else retrieve it the same app
-        this.setState({apps_created: this.state.apps_created.map(item => {
-            if(item.id_app===app.id_app){
-                return app
-            }
-            else{
-                return item
-            }
-            })})
-    }
 
     //delete the app on dashBoard and created apps list by updating state
     deleteApp(id_app){
         this.setState({
             apps_created:this.state.apps_created.filter(item => item.id_app!==id_app),
             dashBoard_apps:this.state.dashBoard_apps.filter(item => item.id_app!==id_app)})
+    }
+
+    editApp(app){
+        this.setState({
+            apps_created:this.state.apps_created.map(item => {
+                if(item.id_app!==app.id_app){
+                    return item
+                }
+                else{
+                    return app
+                }
+            }),
+            dashBoard_apps:this.state.dashBoard_apps.map(item => {
+                if(item.id_app!==app.id_app){
+                    return item
+                }
+                else{
+                    return app
+                }
+            })
+        })
     }
 
     //delete the app on dashBoard apps list by updating state

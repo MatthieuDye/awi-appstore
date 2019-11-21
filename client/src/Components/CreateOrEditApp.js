@@ -227,6 +227,9 @@ class CreateOrEditApp extends Component {
             .then(response => response.data)
             .then(() => this.createLabelApp())
             .then(() => this.deleteLabelApp())
+            .then(this.props.editApp({id_app:this.state.id_app,name_app:this.state.name_app,
+                id_creator:this.state.id_creator,name_user:this.state.name_creator,
+                description_app:this.state.description_app,link_app:this.state.link_app}))
             .then(this.props.handleClose)
             .catch(err => this.toggleModalError());
 
