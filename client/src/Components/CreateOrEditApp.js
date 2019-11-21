@@ -304,7 +304,7 @@ class CreateOrEditApp extends Component {
                     {labels_selected}
                     </tbody>
                 </table>
-                <Button>Submit</Button>
+                <Button variant="outline-secondary">Submit</Button>
 
                 <Modal isOpen={this.state.modalErrorApp} toggle={this.toggleModalError} className={this.props.className}>
                     <ModalHeader toggle={this.toggleModalError} close={closeErrorBtn}>Error</ModalHeader>

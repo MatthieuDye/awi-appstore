@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import {Modal, ModalHeader, ModalBody } from 'reactstrap'
+import React, {Component} from 'react'
+import {Modal, ModalHeader, ModalBody} from 'reactstrap'
+import {Col} from 'react-bootstrap'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
 import emptystar from "../assets/images/star_favorite_favorite_favorite_favorite_2359.png"
@@ -19,17 +20,17 @@ class AppDetails extends Component {
             modalEditApp: false,
             modalCheckDelete: false,
             added_app: false,
-            labels:[],
-            rating:props.item.rating
+            labels: [],
+            rating: props.item.rating
         };
 
-        this.addAppToDashBoard=this.addAppToDashBoard.bind(this);
-        this.deleteAppFromDashBoard=this.deleteAppFromDashBoard.bind(this);
-        this.deleteApp=this.deleteApp.bind(this);
-        this.addRating=this.addRating.bind(this);
-        this.editRating=this.editRating.bind(this);
-        this.hasRating=this.hasRating.bind(this);
-        this.hasAppOnDashBoard=this.hasAppOnDashBoard.bind(this);
+        this.addAppToDashBoard = this.addAppToDashBoard.bind(this);
+        this.deleteAppFromDashBoard = this.deleteAppFromDashBoard.bind(this);
+        this.deleteApp = this.deleteApp.bind(this);
+        this.addRating = this.addRating.bind(this);
+        this.editRating = this.editRating.bind(this);
+        this.hasRating = this.hasRating.bind(this);
+        this.hasAppOnDashBoard = this.hasAppOnDashBoard.bind(this);
         this.getLabels();
         this.hasAppOnDashBoard();
     }
@@ -37,15 +38,15 @@ class AppDetails extends Component {
     /**
      * getLabels: send a request to server to have labels of the app and set labels state with them
      */
-    getLabels(){
-        axios.get(APP_URL+'/app/'+this.props.item.id_app+'/labels',{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+    getLabels() {
+        axios.get(APP_URL + '/app/' + this.props.item.id_app + '/labels', {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(items => {
-                if(items!==null) {
+                if (items !== null) {
                     this.setState(
                         {
                             labels: items
@@ -60,16 +61,16 @@ class AppDetails extends Component {
     /**
      * hasAppOnDashboard: send a request to know if the app has been added on the dashBoard and set the added_app state with this boolean
      */
-    hasAppOnDashBoard(){
-        axios.get(APP_URL+'/user/'+this.props.id_user+'/hasappondashboard/'+this.props.item.id_app,{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+    hasAppOnDashBoard() {
+        axios.get(APP_URL + '/user/' + this.props.id_user + '/hasappondashboard/' + this.props.item.id_app, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(res => this.setState(
                 {
-                    added_app:res.hasApp
+                    added_app: res.hasApp
                 })
             )
             .catch(err => console.log(err))
@@ -79,25 +80,25 @@ class AppDetails extends Component {
     /**
      * addAppToDashBoard: send a request to server to add the app on user dashBoard and set added_app state to true
      */
-    addAppToDashBoard(){
-        axios.post(APP_URL+'/user/myappsondashboard',{
+    addAppToDashBoard() {
+        axios.post(APP_URL + '/user/myappsondashboard', {
             id_user: this.props.id_user,
             id_app: this.props.item.id_app
-        },{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             //the app is added to dashBoard
             .then(() => this.setState(
                 {
-                    added_app:true
+                    added_app: true
                 })
             )
             //trigger addAppToDashBoard function of parent component (AppList) to add the app on the list of Component
-            .then(() =>{
-                if(this.props.addAppToDashBoard){
+            .then(() => {
+                if (this.props.addAppToDashBoard) {
                     this.props.addAppToDashBoard(this.props.item)
                 }
             })
@@ -107,21 +108,21 @@ class AppDetails extends Component {
     /**
      * deleteAppFromDashBoard: send a request to server to delete app from dashBoard
      */
-    deleteAppFromDashBoard(){
-        axios.delete(APP_URL+'/user/'+this.props.id_user+'/myappsondashboard/'+this.props.item.id_app,{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+    deleteAppFromDashBoard() {
+        axios.delete(APP_URL + '/user/' + this.props.id_user + '/myappsondashboard/' + this.props.item.id_app, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(() => this.setState(
                 {
-                    added_app:false
+                    added_app: false
                 })
             )
             //trigger deleteAppFromDashBoard function of parent component (AppList) to delete the app from the list of Component
             .then(() => {
-                if(this.props.deleteAppFromDashBoard){
+                if (this.props.deleteAppFromDashBoard) {
                     this.props.deleteAppFromDashBoard(this.props.item.id_app)
                 }
             })
@@ -132,23 +133,23 @@ class AppDetails extends Component {
      * hasRating: triggered after user rate the app
      * request the server to know if actual user has rated the app and then create or edit the rating of him on app, depending of result
      */
-    hasRating(){
-        axios.get(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app+'/rating',{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+    hasRating() {
+        axios.get(APP_URL + '/user/' + this.props.id_user + '/app/' + this.props.item.id_app + '/rating', {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(res => {
                 //if he has already rated the app, edit his rating
-                if(res.hasRating){
+                if (res.hasRating) {
                     this.editRating()
                 }
                 //else, create his rating
-                else{
+                else {
                     this.addRating()
                 }
-                })
+            })
             .then(() => this.hasAppOnDashBoard())
             .catch(err => console.log(err))
     }
@@ -156,50 +157,50 @@ class AppDetails extends Component {
     /**
      * addRating: request the server to add rating of user on app
      */
-    addRating(){
-        axios.post(APP_URL+'/user/app/rating',{
+    addRating() {
+        axios.post(APP_URL + '/user/app/rating', {
             id_user: this.props.id_user,
             id_app: this.props.item.id_app,
             rating: this.state.rating
-        },{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
-            .then(()=>this.setState({rating:this.props.rating}))
+            .then(() => this.setState({rating: this.props.rating}))
             .catch(err => console.log(err))
     }
 
     /**
      * editRating: request the server to edit rating of user on app
      */
-    editRating(){
-        axios.put(APP_URL+'/user/app/rating',{
+    editRating() {
+        axios.put(APP_URL + '/user/app/rating', {
             id_user: this.props.id_user,
             id_app: this.props.item.id_app,
             rating: this.state.rating
-        },{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
-            .then(()=>this.setState({rating:this.props.rating}))
+            .then(() => this.setState({rating: this.props.rating}))
             .catch(err => console.log(err))
     }
 
     /**
      * deleteApp: request the server to delete an app
      */
-    deleteApp(){
-        axios.delete(APP_URL+'/user/'+this.props.id_user+'/app/'+this.props.item.id_app,{
-            headers:{
-                Authorization:'Bearer '+localStorage.getItem('token')
+    deleteApp() {
+        axios.delete(APP_URL + '/user/' + this.props.id_user + '/app/' + this.props.item.id_app, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         })
             .then(response => response.data)
             .then(() => this.setState(
                 {
-                    added_app:false
+                    added_app: false
                 })
             )
             .then(this.toggleModalCheckDeleteApp)
@@ -221,14 +222,14 @@ class AppDetails extends Component {
      * toggleModalEditApp: change state of modalEditApp to open and close the modal
      */
     toggleModalEditApp = () => {
-        this.setState( prevState => ({
+        this.setState(prevState => ({
             modalEditApp: !prevState.modalEditApp
         }))
     };
 
     toggleModalCheckDeleteApp = () => {
-        this.setState( prevState => ({
-        modalCheckDelete: !prevState.modalCheckDelete
+        this.setState(prevState => ({
+            modalCheckDelete: !prevState.modalCheckDelete
         }))
     };
 
@@ -254,90 +255,90 @@ class AppDetails extends Component {
     }
 
 
-
     render() {
         const closeBtn = <Button className="close" onClick={this.toggleModalDetailsApp}>&times;</Button>;
         const closeEditBtn = <Button className="close" onClick={this.toggleModalEditApp}>&times;</Button>;
         const closeCheckDeleteBtn = <Button className="close" onClick={this.toggleModalCheckDeleteApp}>&times;</Button>;
 
-        const editBtn = () =>{
-            if(this.props.deleteApp) {
-                return <Button variant="outline-warning" className="editAppBtn" onClick={this.toggleModalEditApp}>Edit App</Button>
-            }
-           else{
-               return ''
+        const editBtn = () => {
+            if (this.props.deleteApp) {
+                return <Button variant="outline-warning" className="editAppBtn"
+                               onClick={this.toggleModalEditApp}>Edit</Button>
+            } else {
+                return ''
             }
         };
         const modalEdit = () => {
-            if(this.props.deleteApp) {
+            if (this.props.deleteApp) {
                 return <Modal isOpen={this.state.modalEditApp} toggle={this.toggleModalEditApp}
                               className={this.props.className}>
-                    <ModalHeader toggle={this.toggleModalEditApp} close={closeEditBtn}>Edit an App</ModalHeader>
+                    <ModalHeader toggle={this.toggleModalEditApp} close={closeEditBtn}>EDIT</ModalHeader>
                     <ModalBody>
-                        <CreateOrEditApp item={this.props.item} handleClose={this.toggleModalEditApp} editApp={this.props.editApp}
+                        <CreateOrEditApp item={this.props.item} handleClose={this.toggleModalEditApp}
+                                         editApp={this.props.editApp}
                                          oldLabels={this.state.labels}/>
                     </ModalBody>
                 </Modal>
-            }
-            else{
+            } else {
                 return ''
             }
         }
 
-        const addBtn =  () => {
-            if(this.state.added_app){
-                return <Button variant="outline-secondary" className="delete" onClick={this.deleteAppFromDashBoard}>Remove from my DashBoard</Button>
-            }
-            else{
-                return <Button variant="outline-success" className="add" onClick={this.addAppToDashBoard}>Add to my DashBoard</Button>
+        const addBtn = () => {
+            if (this.state.added_app) {
+                return <Button variant="outline-secondary" className="delete" onClick={this.deleteAppFromDashBoard}>Remove
+                    from my DashBoard</Button>
+            } else {
+                return <Button variant="outline-success" className="add" onClick={this.addAppToDashBoard}>Add to my
+                    DashBoard</Button>
             }
         };
 
-        const link = () =>{
-            if(this.props.item.link_app!==''){
-                return <a href={this.props.item.link_app} target="external"><Button variant="outline-primary">Open</Button></a>
-            }
-            else{
+        const link = () => {
+            if (this.props.item.link_app !== '') {
+                return <a href={this.props.item.link_app} target="external"><Button
+                    variant="outline-primary">Open</Button></a>
+            } else {
                 return <i>No link</i>
             }
         };
 
-        const deleteBtn = () =>{
-            if(this.props.deleteApp){
-                return <Button variant="outline-danger" className="deleteApp" onClick={this.toggleModalCheckDeleteApp}>Delete</Button>
-            }
-            else{
+        const deleteBtn = () => {
+            if (this.props.deleteApp) {
+                return <Button variant="outline-danger" className="deleteApp"
+                               onClick={this.toggleModalCheckDeleteApp}>Delete</Button>
+            } else {
                 return ''
             }
         }
 
-        const labels = () =>{
-            if(this.state.labels!==[]){
+        const labels = () => {
+            if (this.state.labels !== []) {
                 return <LabelList items={this.state.labels}/>
-            }
-            else{
+            } else {
                 return <h5>No labels</h5>
             }
         }
 
         return (
-                <tr key={this.props.item.id_app}>
-                    <td onClick={this.toggleModalDetailsApp} className="name_app">{this.props.item.name_app}</td>
-                    <td onClick={this.toggleModalDetailsApp} className="name_creator">{this.props.item.name_user}</td>
-                    <td><div style={{fontSize: 24}}>
+            <tr key={this.props.item.id_app}>
+                <td onClick={this.toggleModalDetailsApp} className="name_app">{this.props.item.name_app}</td>
+                <td onClick={this.toggleModalDetailsApp} className="name_creator">{this.props.item.name_user}</td>
+                <td>
+                    <div style={{fontSize: 24}}>
                         <StarRatingComponent
                             className="star_component"
-                            id={this.props.item.id_app+this.props.item.name_app}
+                            id={this.props.item.id_app + this.props.item.name_app}
                             name="rating"
                             starCount={5}
                             starHoverColor='rgb(255,0,0)'
                             value={this.state.rating}
-                            editing={this.props.item.id_creator!==this.props.id_user}
+                            editing={this.props.item.id_creator !== this.props.id_user}
                             onStarClick={this.onStarClick.bind(this)}
-                            renderStarIcon= {(index, value) => {
+                            renderStarIcon={(index, value) => {
                                 return (
                                     <span>
-                                        {index <= value?<img src={fullstar}/>:<img src={emptystar}/>}
+                                        {index <= value ? <img src={fullstar}/> : <img src={emptystar}/>}
                                     </span>
                                 );
                             }}
@@ -347,25 +348,31 @@ class AppDetails extends Component {
                                         <img src={halfstar}/>
                                     </span>
                                 );
-                            }} />
-                    </div></td>
-                    <td>{link()}</td>
-                    <td>{addBtn()}</td>
-                    <td>{deleteBtn()}
-                        <Modal isOpen={this.state.modalCheckDelete} toggle={this.toggleModalCheckDeleteApp} className={this.props.className}>
-                            <ModalHeader toggle={this.toggleModalCheckDeleteApp} close={closeCheckDeleteBtn}>{this.props.item.name_app}</ModalHeader>
-                            <ModalBody>
-                                <div>
-                                    <h4>Do you really want to delete {this.props.item.name_app} ?</h4><br/>
-                                    <Button onClick={this.deleteApp.bind(this)}>Yes</Button><Button onClick={this.toggleModalCheckDeleteApp}>No</Button>
-                                </div>
-                            </ModalBody>
-                        </Modal>
-                    </td>
-                    <td>{editBtn()}
+                            }}/>
+                    </div>
+                </td>
+                <td>{link()}</td>
+                <td>{addBtn()}</td>
+                <td>{deleteBtn()}
+                    <Modal isOpen={this.state.modalCheckDelete} toggle={this.toggleModalCheckDeleteApp}
+                           className={this.props.className}>
+                        <ModalHeader toggle={this.toggleModalCheckDeleteApp}
+                                     close={closeCheckDeleteBtn}>{this.props.item.name_app}</ModalHeader>
+                        <ModalBody>
+                            <div>
+                                <h4>Do you really want to delete {this.props.item.name_app} ?</h4><br/>
+                                <Button variant="danger" onClick={this.deleteApp.bind(this)}>Yes</Button>
+                                <Button variant="warning" onClick={this.toggleModalCheckDeleteApp}>No</Button>
+                            </div>
+                        </ModalBody>
+                    </Modal>
+                </td>
+                <td>{editBtn()}
                     {modalEdit()}
-                    <Modal isOpen={this.state.modalAppDetails} toggle={this.toggleModalDetailsApp} className={this.props.className}>
-                        <ModalHeader toggle={this.toggleModalDetailsApp} close={closeBtn}>{this.props.item.name_app}</ModalHeader>
+                    <Modal isOpen={this.state.modalAppDetails} toggle={this.toggleModalDetailsApp}
+                           className={this.props.className}>
+                        <ModalHeader toggle={this.toggleModalDetailsApp}
+                                     close={closeBtn}>{this.props.item.name_app}</ModalHeader>
                         <ModalBody>
                             <div>
                                 Description : {this.props.item.description_app}<br/>
@@ -375,8 +382,8 @@ class AppDetails extends Component {
                             </div>
                         </ModalBody>
                     </Modal>
-                    </td>
-                </tr>
+                </td>
+            </tr>
 
         )
     }

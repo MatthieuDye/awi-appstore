@@ -76,14 +76,18 @@ class Catalog extends Component {
 
             <React.Fragment>
                 <Navbar bg="dark" variant="dark">
-                    <Navbar.Brand ><h4>CastelStore</h4></Navbar.Brand>
+                    <Navbar.Brand><h4>CastelStore</h4></Navbar.Brand>
                     <Nav className="mr-auto">
                         <Nav.Link><Link to={'/profile'}><h6 style={{color: '#FFFFFF'}}>Profile</h6></Link></Nav.Link>
-                        <Nav.Link onClick={this.handleLogOut.bind(this)}><h6 style={{color: '#FFFFFF'}}>Logout</h6></Nav.Link>
+                        <Nav.Link onClick={this.handleLogOut.bind(this)}><h6 style={{color: '#FFFFFF'}}>Logout</h6>
+                        </Nav.Link>
                     </Nav>
                 </Navbar>
 
                 <Container className="App">
+                    <br></br>
+                    <h1>CATALOG</h1>
+                    <br></br>
                     <Row>
                         <Col>
                             <AppList items={this.state.items} id_user={this.state.id_user}/>
