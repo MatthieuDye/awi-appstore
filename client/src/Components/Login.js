@@ -56,7 +56,7 @@ export default class Login extends Component {
                         <img src={castle} alt="castle" height="400px" />
                     </Col>
                     <Col md={{span: 9, offset: 5}}>
-                        <a href={this.authPolytech()}><Button>Please Login</Button></a>
+                        <a href={this.authPolytech()}><Button variant="info" >Please Login</Button></a>
                     </Col>
                 </Row>
 
