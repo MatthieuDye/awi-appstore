@@ -1,5 +1,5 @@
 const table_name = 'user';
-const db = require('../database').db;
+const db = require('../config/database').db;
 
 /**
  * authenticateUser: query db to know if user exists thanks to his name in req, and insert it if not

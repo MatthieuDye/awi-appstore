@@ -1,5 +1,5 @@
 const table_name = 'label_app';
-const db = require('../database').db;
+const db = require('../config/database').db;
 
 
 /**

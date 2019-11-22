@@ -1,5 +1,5 @@
 const table_name = 'label';
-const db = require('../database').db;
+const db = require('../config/database').db;
 
 /**
  * getLabels: query db to have all existing labels

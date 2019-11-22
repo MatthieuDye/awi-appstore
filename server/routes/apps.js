@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const middleware= require('../middleware');
+const middleware= require('../config/middleware');
 const app = require('../db-queries/app');
 const label_app = require('../db-queries/label_app');
 

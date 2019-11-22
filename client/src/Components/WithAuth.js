@@ -12,6 +12,11 @@ export default function withAuth(ComponentToProtect) {
                 redirect: false,
             };
         }
+
+        /**
+         * componentDidMount: send a request to server to verify the token of user who want to access pages
+         * @returns {Promise<AxiosResponse<T>>}
+         */
         componentDidMount() {
             return axios.get(APP_URL+'/checkToken',{
                 headers:{Authorization:'Bearer '+localStorage.getItem('token')}

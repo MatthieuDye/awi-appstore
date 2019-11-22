@@ -1,7 +1,7 @@
 const table_app = 'app';
 const table_rating = 'rating';
 const table_user = 'user';
-const db = require('../database').db;
+const db = require('../config/database').db;
 
 /**
  * getAppsFromUser: get in database all apps created by user who send the request (find with token)

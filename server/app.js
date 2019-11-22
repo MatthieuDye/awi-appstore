@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan('combined'));
 
-const middleware = require('./middleware');
+const middleware = require('./config/middleware');
 
 // App Routes
 

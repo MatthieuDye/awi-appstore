@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import castle from '../assets/images/castle.jpg';
+import castle from '../assets/castle.jpg';
 import {Col, Row, Container, Button} from 'react-bootstrap';
 import axios from "axios";
 import {APP_FRONT_URL, APP_URL} from "../environment";
@@ -10,6 +10,10 @@ export default class Login extends Component {
         super(props);
     }
 
+    /**
+     * authPolytech: redirect on polytech authentication page
+     * @returns {string}
+     */
     authPolytech = () => {
         let state = Math.random().toString(36).substring(7);
         localStorage.setItem("state", state);
@@ -18,6 +22,9 @@ export default class Login extends Component {
         return `http://oauth.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
     };
 
+    /**
+     * authenticate: send a request to server to add the user if not exists and verify token
+     */
     authenticate(){
         axios.get(APP_URL+'/user/authenticate',{
             headers:{
@@ -27,6 +34,9 @@ export default class Login extends Component {
             .catch(err => err)
     }
 
+    /**
+     * componentDidMount: launch the authentication on page opening
+     */
     componentDidMount() {
         if (this.props.location.search) {
             const params = {};

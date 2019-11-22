@@ -1,7 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const db = require('./database').db;
-
+const jwtDecode = require('jwt-decode');
 /**
  * withAuth: verify if request provide a valid token. If yes, send to next request step. If no, raise an error
  * @param req
@@ -36,6 +36,26 @@ const withAuth = function(req, res, next) {
 
 };
 
+const withAuthWithoutVerify = function(req, res, next) {
+    const authorization = req.headers.authorization;
+    //authorization has to be a bearer
+    if(authorization.startsWith('Bearer ')){
+        //get the token
+        const token = authorization.slice(7,authorization.length);
+        if (!token) {
+            res.status(401).send('Unauthorized: No token provided');
+        } else {
+            const decoded = jwtDecode(token);
+            //store in req the name of user provided in token for the next requests
+            req.name_user = decoded.firstname+"."+decoded.lastname;
+            next();
+        }
+    }
+    else{
+        res.status(401).send('Unauthorized: Not a Bearer Authorization');
+    }
+};
+
 /**
  * verifyId: verify that user identify in param, body or header is the user who sent the request
  * @param req
@@ -59,4 +79,5 @@ const verifyId = function(req,res,next) {
 module.exports = {
     withAuth,
     verifyId,
+    withAuthWithoutVerify
 };

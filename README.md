@@ -2,7 +2,7 @@
 
 Castel'Store is an online app store for Polytech students
 
-![Castel'Store logo](client/src/assets/images/castle.jpg)
+![Castel'Store logo](client/src/assets/castle.jpg)
 
 ## Links
 

@@ -11,6 +11,9 @@ import WithAuth from "./Components/WithAuth";
 import Login from "./Components/Login";
 import Profile from "./Components/Profile";
 
+/**
+ * App: contains routes of the application, WithAuth protect the components by verifying token
+ */
 class App extends Component {
     render() {
         return (

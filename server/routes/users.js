@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const middleware = require('../middleware');
+const middleware = require('../config/middleware');
 const user = require('../db-queries/user');
 const app = require('../db-queries/app');
 const label_app = require('../db-queries/label_app');
@@ -16,7 +16,7 @@ router.get('/authenticate', middleware.withAuth,(req,res) => user.authenticateUs
 router.get('/myapps',middleware.withAuth,(req,res) => app.getAppsFromUser(req,res));
 
 //get apps added on dashboard by a user
-router.get('/myappsondashboard',middleware.withAuth,(req,res) => app.getUserAppsOnDashBoard(req,res));
+router.get('/myappsondashboard',middleware.withAuthWithoutVerify,(req,res) => app.getUserAppsOnDashBoard(req,res));
 
 //add an app to a user dashboard
 router.post('/myappsondashboard',middleware.withAuth,middleware.verifyId,(req,res) => app.insertUserApp(req,res));
@@ -24,7 +24,7 @@ router.post('/myappsondashboard',middleware.withAuth,middleware.verifyId,(req,re
 //remove an app on a user dashboard
 router.delete('/:id_user/myappsondashboard/:id_app',middleware.withAuth,(req,res) => app.deleteUserApp(req,res));
 
-router.delete('/name/:name_user/myappsondashboard/:id_app',middleware.withAuth,(req,res) => app.deleteUserApp(req,res));
+router.delete('/name/:name_user/myappsondashboard/:id_app',middleware.withAuthWithoutVerify,(req,res) => app.deleteUserApp(req,res));
 
 //say if an app is on user dashboard
 router.get('/:id_user/hasappondashboard/:id_app',middleware.withAuth,(req,res) => user.hasAppOnDashBoard(req,res));

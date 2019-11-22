@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {Button, Form, FormGroup, ModalBody, Modal} from 'react-bootstrap';
-import {Label, Input, ModalHeader} from 'reactstrap'
+import { Form, FormGroup, ModalBody, Modal} from 'react-bootstrap';
+import {Button,Label, Input, ModalHeader} from 'reactstrap'
 import '../App.css'
 import axios from 'axios'
 import {APP_URL} from "../environment";

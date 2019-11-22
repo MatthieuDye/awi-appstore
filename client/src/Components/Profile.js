@@ -30,10 +30,8 @@ class Profile extends Component {
         this.componentDidMount();
     }
 
-    //send a request to get the user connected
-
     /**
-     *
+     *getUser: send a request to get the user connected
      */
     getUser() {
         axios.get(APP_URL + '/user', {
@@ -50,12 +48,15 @@ class Profile extends Component {
                     mail_user: item.mail_user
                 })
             )
+            //launch requests to get apps of user and apps on user dashboard
             .then(() => this.getAppsCreatedByUser())
             .then(() => this.getAppsOnDashBoard())
             .catch(err => console.log(err))
     }
 
-    //send a request to have apps owned by user
+    /**
+     *getAppsCreatedByUser: send a request to server to have apps owned by user
+     */
     getAppsCreatedByUser() {
         axios.get(APP_URL + '/user/myapps', {
             headers: {
@@ -68,7 +69,9 @@ class Profile extends Component {
             .catch(err => console.log(err))
     }
 
-    //send a request to have apps in dashBoard by user
+    /**
+     * getAppsOnDashboard: send a request to server to have apps in dashBoard by user
+     */
     getAppsOnDashBoard() {
         axios.get(APP_URL + '/user/myappsondashboard', {
             headers: {
@@ -76,22 +79,32 @@ class Profile extends Component {
             }
         })
             .then(response => response.data)
+            //update state of apps on user dashboard
             .then(items => this.setState({dashBoard_apps: items}))
             .catch(err => console.log(err))
     }
 
-    //add the app on dashBoard apps list by updating state
+    /**
+     * addAppToDashBoard: add the app on dashBoard apps list by updating state
+     * @param app: the app added
+     */
     addAppToDashBoard(app) {
         this.setState({dashBoard_apps: [...this.state.dashBoard_apps, app]})
     }
 
-    //add the app on created apps list by updating state
+    /**
+     * addApp: add the app on created apps list by updating state
+     * @param app: the app created
+     */
     addApp(app) {
         this.setState({apps_created: [...this.state.apps_created, app]})
     }
 
 
-    //delete the app on dashBoard and created apps list by updating state
+    /**
+     * deleteApp: delete the app on dashBoard and created apps list by updating state
+     * @param id_app: the id of app deleted
+     */
     deleteApp(id_app) {
         this.setState({
             apps_created: this.state.apps_created.filter(item => item.id_app !== id_app),
@@ -99,6 +112,10 @@ class Profile extends Component {
         })
     }
 
+    /**
+     * editApp: edit the app on dashBoard and created apps list by updating state
+     * @param app: the app edited
+     */
     editApp(app) {
         this.setState({
             apps_created: this.state.apps_created.map(item => {
@@ -118,8 +135,10 @@ class Profile extends Component {
         })
     }
 
-    //delete the app on dashBoard apps list by updating state
-
+    /**
+     * delete the app on dashBoard apps list by updating state
+     * @param id_app: id of the app deleted from dashboard
+     */
     deleteAppFromDashBoard(id_app) {
         this.setState({dashBoard_apps: this.state.dashBoard_apps.filter(item => item.id_app !== id_app)})
     }
@@ -130,7 +149,9 @@ class Profile extends Component {
         this.getUser()
     }
 
-    //to open and close the AddApp modal
+    /**
+     * toggleModalApp: to open and close the AddApp modal
+     */
     toggleModalAddApp = () => {
         //when triggered, modalCreateApp state take the opposite value
         this.setState(prevState => ({
@@ -138,6 +159,9 @@ class Profile extends Component {
         }))
     };
 
+    /**
+     * handleLogOut: remove the token from storage and redirect to login page
+     */
     handleLogOut() {
         localStorage.removeItem('token');
         this.props.history.push('/login');

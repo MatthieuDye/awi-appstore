@@ -1,5 +1,5 @@
 const table_name = 'rating';
-const db = require('../database').db;
+const db = require('../config/database').db;
 
 /**
  * hasRating: query db to know if a user has rated an app identified in req.params

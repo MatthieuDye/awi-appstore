@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
 import {Modal, ModalHeader, ModalBody} from 'reactstrap'
-import {Col} from 'react-bootstrap'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
-import emptystar from "../assets/images/star_favorite_favorite_favorite_favorite_2359.png"
-import fullstar from "../assets/images/star_favorite_favorite_favorite_favorite_2360.png"
-import halfstar from "../assets/images/star_favorite_favorite_favorite_favorite_2361.png";
+import emptystar from "../assets/star_favorite_favorite_favorite_favorite_2359.png"
+import fullstar from "../assets/star_favorite_favorite_favorite_favorite_2360.png"
+import halfstar from "../assets/star_favorite_favorite_favorite_favorite_2361.png";
 
 import {APP_URL} from "../environment";
 import LabelList from "./LabelList";

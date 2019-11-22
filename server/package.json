@@ -18,10 +18,11 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "knex": "^0.20.0",
     "morgan": "^1.9.1",
-    "pg": "^7.12.1",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "pg": "^7.12.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

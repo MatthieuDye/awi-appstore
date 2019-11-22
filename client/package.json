@@ -9,13 +9,10 @@
     "bootstrap": "^4.3.1",
     "react": "^16.11.0",
     "react-bootstrap": "^1.0.0-beta.14",
-    "react-csv": "^1.1.1",
     "react-dom": "^16.11.0",
-    "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "react-star-rating-component": "^1.4.1",
-    "react-star-rating-controlled-component": "^1.0.1",
     "reactstrap": "^8.1.1"
   },
   "scripts": {
@@ -51,11 +48,9 @@
     "enzyme-adapter-react-16": "^1.15.1",
     "jest": "^24.9.0",
     "react-addons-test-utils": "^15.6.2",
-    "react-cookie": "^4.0.1",
     "react-docgen": "^4.1.1",
     "react-router-dom": "^5.1.2",
-    "react-test-renderer": "^16.12.0",
-    "universal-cookie": "^4.0.2"
+    "react-test-renderer": "^16.12.0"
   },
   "jest": {
     "moduleNameMapper": {

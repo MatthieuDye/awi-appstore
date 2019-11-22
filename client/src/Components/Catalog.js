@@ -4,9 +4,6 @@ import AppList from "./AppList";
 import axios from 'axios';
 import {APP_URL} from "../environment";
 import {Link} from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import FormControl from "react-bootstrap/FormControl";
-import Form from "react-bootstrap/Form";
 
 /**
  * Catalog Component which show the catalog page with all apps
