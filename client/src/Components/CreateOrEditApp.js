@@ -190,7 +190,7 @@ class CreateOrEditApp extends Component {
     submitFormAdd = e => {
         e.preventDefault();
         axios.post(APP_URL+'/app', {
-            name_app: this.state.name_app.toLowerCase(),
+            name_app: this.state.name_app,
             id_creator: this.state.id_creator,
             description_app: this.state.description_app,
             link_app: this.state.link_app
